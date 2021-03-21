@@ -36,7 +36,8 @@ int request::execute(const color_t &color, bool display) {
 void request::draw_line(const color_t &color, bool display) {
   std::vector<point_t> data;
 
-  void (*func)(const line_t &, const color_t &, std::vector<point_t> &data);
+  void (*func)(const line_t &, const color_t &, std::vector<point_t> &data,
+               bool);
 
   switch (arg.method) {
   case DDA:
@@ -61,7 +62,7 @@ void request::draw_line(const color_t &color, bool display) {
     return;
   }
 
-  func(arg.line, color, data);
+  func(arg.line, color, data, display);
 
   if (display)
     drawer.draw_points(data);
@@ -75,7 +76,8 @@ void request::draw_brunch(const color_t &color, bool display) {
   auto center = arg.bunch.center;
   auto r = arg.bunch.r;
 
-  void (*func)(const line_t &, const color_t &, std::vector<point_t> &data);
+  void (*func)(const line_t &, const color_t &, std::vector<point_t> &data,
+               bool);
 
   switch (arg.method) {
   case DDA:
@@ -107,7 +109,7 @@ void request::draw_brunch(const color_t &color, bool display) {
   for (auto i = 0; i < 360; i += arg.bunch.step) {
     func({center,
           {center.x + r * cos(to_rads(i)), center.y + r * sin(to_rads(i))}},
-         color, data);
+         color, data, display);
   }
 
   if (display)

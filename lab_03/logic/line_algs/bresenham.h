@@ -10,12 +10,12 @@
 #include <datatypes.h>
 
 void bresenham_int(const line_t &line, const color_t &color,
-                   std::vector<point_t> &data);
+                   std::vector<point_t> &data, bool display);
 
 void bresenham_float(const line_t &line, const color_t &color,
-                     std::vector<point_t> &data);
+                     std::vector<point_t> &data, bool display);
 
 void bresenham_antialised(const line_t &line, const color_t &color,
-                          std::vector<point_t> &data);
+                          std::vector<point_t> &data, bool display);
 
 #endif // LAB_03_BRESENHAM_H

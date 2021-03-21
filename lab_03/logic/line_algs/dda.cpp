@@ -5,7 +5,7 @@
 #include <cmath>
 #include <dda.h>
 
-void dda(const line_t &line, const color_t &color, std::vector<point_t> &data) {
+void dda(const line_t &line, const color_t &color, std::vector<point_t> &data, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   auto l = std::max(std::abs(dx), std::abs(dy));
 
@@ -13,7 +13,9 @@ void dda(const line_t &line, const color_t &color, std::vector<point_t> &data) {
 
   auto x = line.a.x, y = line.a.y;
   for (int i = 0; i < l; ++i) {
-      data.emplace_back(round(x), round(y), color);
+    auto rx = round(x), ry = round(y);
+    if (display)
+      data.emplace_back(rx, ry, color);
 
     x += xsign;
     y += ysign;

@@ -4,11 +4,11 @@
 
 #include <cmath>
 
-#include <utils.h>
 #include <bresenham.h>
+#include <utils.h>
 
 void bresenham_int(const line_t &line, const color_t &color,
-                   std::vector<point_t> &data) {
+                   std::vector<point_t> &data, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
 
   auto xsign = sign(dx), ysign = sign(dy);
@@ -26,6 +26,7 @@ void bresenham_int(const line_t &line, const color_t &color,
 
   auto x = round(line.a.x), y = round(line.a.y);
   for (auto i = 0; i <= dx; ++i) {
+    if (display)
       data.emplace_back(x, y, color);
 
     if (e >= 0) {
@@ -46,7 +47,7 @@ void bresenham_int(const line_t &line, const color_t &color,
 }
 
 void bresenham_float(const line_t &line, const color_t &color,
-                     std::vector<point_t> &data) {
+                     std::vector<point_t> &data, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   int32_t xsign = sign(dx), ysign = sign(dy);
 
@@ -63,6 +64,7 @@ void bresenham_float(const line_t &line, const color_t &color,
 
   auto x = round(line.a.x), y = round(line.a.y);
   for (auto i = 0; i <= dx; ++i) {
+    if (display)
       data.emplace_back(x, y, color);
 
     if (e >= 0) {
@@ -83,7 +85,7 @@ void bresenham_float(const line_t &line, const color_t &color,
 }
 
 void bresenham_antialised(const line_t &line, const color_t &color,
-                          std::vector<point_t> &data) {
+                          std::vector<point_t> &data, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   auto xsign = sign(dx), ysign = sign(dy);
 
@@ -98,8 +100,10 @@ void bresenham_antialised(const line_t &line, const color_t &color,
   auto m = dy / dx;
   auto e = 0.5;
 
+  color_t color1 = update(color, e);
   auto x = round(line.a.x), y = round(line.a.y);
-  data.emplace_back(x, y, update(color, e));
+  if (display)
+    data.emplace_back(x, y, color1);
 
   auto W = 1 - m;
   for (int i = 0; i <= dx; ++i) {
@@ -115,6 +119,8 @@ void bresenham_antialised(const line_t &line, const color_t &color,
       e -= W;
     }
 
-    data.emplace_back(x, y, update(color, e));
+    color1 = update(color, e);
+    if (display)
+      data.emplace_back(x, y, color1);
   }
 }

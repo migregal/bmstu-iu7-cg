@@ -8,13 +8,16 @@
 #include <utils.h>
 #include <wu.h>
 
-void wu(const line_t &line, const color_t &color, std::vector<point_t> &data) {
+void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
+        bool display) {
   auto a = line.a, b = line.b;
 
   auto ipart = [](double x) -> int { return int(std::floor(x)); };
   auto round = [](double x) -> double { return std::round(x); };
   auto fpart = [](double x) -> double { return x - std::floor(x); };
   auto rfpart = [=](double x) -> double { return 1 - fpart(x); };
+
+  color_t color1, color2;
 
   const bool steep = std::abs(b.y - a.y) > std::abs(b.x - a.x);
   if (steep) {
@@ -38,13 +41,18 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data) {
     const double xgap = rfpart(a.x + 0.5);
     xpx11 = int(xend);
     const int ypx11 = ipart(yend);
+
+    color1 = update(color, rfpart(yend) * xgap);
+    color2 = update(color, fpart(yend) * xgap);
+    if (display) {
       if (steep) {
-        data.emplace_back(ypx11, xpx11, update(color, rfpart(yend) * xgap));
-        data.emplace_back(ypx11 + 1, xpx11, update(color, fpart(yend) * xgap));
+        data.emplace_back(ypx11, xpx11, color1);
+        data.emplace_back(ypx11 + 1, xpx11,color2);
       } else {
-        data.emplace_back(xpx11, ypx11, update(color, rfpart(yend) * xgap));
-        data.emplace_back(xpx11, ypx11 + 1, update(color, fpart(yend) * xgap));
+        data.emplace_back(xpx11, ypx11, color1);
+        data.emplace_back(xpx11, ypx11 + 1, color2);
       }
+    }
 
     intery = yend + gradient;
   }
@@ -56,20 +64,28 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data) {
     const double xgap = rfpart(b.x + 0.5);
     xpx12 = int(xend);
     const int ypx12 = ipart(yend);
-      if (steep) {
-        data.emplace_back(ypx12, xpx12, update(color, rfpart(yend) * xgap));
-        data.emplace_back(ypx12 + 1, xpx12, update(color, fpart(yend) * xgap));
-      } else {
-        data.emplace_back(xpx12, ypx12, update(color, rfpart(yend) * xgap));
-        data.emplace_back(xpx12, ypx12 + 1, update(color, fpart(yend) * xgap));
-      }
 
+    color1 = update(color, rfpart(yend) * xgap);
+    color2 = update(color, fpart(yend) * xgap);
+    if (display) {
+      if (steep) {
+        data.emplace_back(ypx12, xpx12, color1);
+        data.emplace_back(ypx12 + 1, xpx12, color2);
+      } else {
+        data.emplace_back(xpx12, ypx12, color1);
+        data.emplace_back(xpx12, ypx12 + 1, color2);
+      }
+    }
   }
 
   if (steep) {
     for (int x = xpx11 + 1; x < xpx12; x++) {
-      data.emplace_back(ipart(intery), x, update(color, rfpart(intery)));
-      data.emplace_back(ipart(intery) + 1, x, update(color, fpart(intery)));
+      color1 = update(color, rfpart(intery));
+      color2 = update(color, fpart(intery));
+      if (display) {
+        data.emplace_back(ipart(intery), x, color1);
+        data.emplace_back(ipart(intery) + 1, x, color2);
+      }
 
       intery += gradient;
     }
@@ -77,8 +93,12 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data) {
   }
 
   for (int x = xpx11 + 1; x < xpx12; x++) {
-    data.emplace_back(x, ipart(intery), update(color, rfpart(intery)));
-    data.emplace_back(x, ipart(intery) + 1, update(color, fpart(intery)));
+    color1 = update(color, rfpart(intery));
+    color2 = update(color, fpart(intery));
+    if (display){
+      data.emplace_back(x, ipart(intery), color1);
+      data.emplace_back(x, ipart(intery) + 1, color2);
+    }
     intery += gradient;
   }
 }

@@ -9,6 +9,7 @@
 
 #include <datatypes.h>
 
-void wu(const line_t &line, const color_t &color, std::vector<point_t> &data);
+void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
+        bool display);
 
 #endif // LAB_03_WU_H
