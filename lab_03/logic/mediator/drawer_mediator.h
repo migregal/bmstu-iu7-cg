@@ -18,7 +18,7 @@ public:
 
   void draw_line(const point_t &p1, const point_t &p2, color_t color);
 
-  void draw_points(std::vector<point_t> &points);
+  void draw_point(double x, double y, const color_t &color);
 
   void clear();
 };

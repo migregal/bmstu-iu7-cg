@@ -8,7 +8,7 @@
 #include <utils.h>
 
 void bresenham_int(const line_t &line, const color_t &color,
-                   std::vector<point_t> &data, bool display) {
+                   drawer_mediator &drawer, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
 
   auto xsign = sign(dx), ysign = sign(dy);
@@ -27,7 +27,7 @@ void bresenham_int(const line_t &line, const color_t &color,
   auto x = round(line.a.x), y = round(line.a.y);
   for (auto i = 0; i <= dx; ++i) {
     if (display)
-      data.emplace_back(x, y, color);
+      drawer.draw_point(x, y, color);
 
     if (e >= 0) {
       if (1 == change)
@@ -47,7 +47,7 @@ void bresenham_int(const line_t &line, const color_t &color,
 }
 
 void bresenham_float(const line_t &line, const color_t &color,
-                     std::vector<point_t> &data, bool display) {
+                     drawer_mediator &drawer, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   int32_t xsign = sign(dx), ysign = sign(dy);
 
@@ -65,7 +65,7 @@ void bresenham_float(const line_t &line, const color_t &color,
   auto x = round(line.a.x), y = round(line.a.y);
   for (auto i = 0; i <= dx; ++i) {
     if (display)
-      data.emplace_back(x, y, color);
+      drawer.draw_point(x, y, color);
 
     if (e >= 0) {
       if (1 == change)
@@ -85,7 +85,7 @@ void bresenham_float(const line_t &line, const color_t &color,
 }
 
 void bresenham_antialised(const line_t &line, const color_t &color,
-                          std::vector<point_t> &data, bool display) {
+                          drawer_mediator &drawer, bool display) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   auto xsign = sign(dx), ysign = sign(dy);
 
@@ -103,7 +103,7 @@ void bresenham_antialised(const line_t &line, const color_t &color,
   color_t color1 = update(color, e);
   auto x = round(line.a.x), y = round(line.a.y);
   if (display)
-    data.emplace_back(x, y, color1);
+    drawer.draw_point(x, y, color1);
 
   auto W = 1 - m;
   for (int i = 0; i <= dx; ++i) {
@@ -121,6 +121,6 @@ void bresenham_antialised(const line_t &line, const color_t &color,
 
     color1 = update(color, e);
     if (display)
-      data.emplace_back(x, y, color1);
+      drawer.draw_point(x, y, color1);
   }
 }

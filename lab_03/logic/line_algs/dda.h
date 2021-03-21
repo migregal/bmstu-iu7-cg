@@ -5,11 +5,9 @@
 #ifndef LAB_03_DDA_H
 #define LAB_03_DDA_H
 
-#include <vector>
+#include <drawer_mediator.h>
 
-#include <datatypes.h>
-
-void dda(const line_t &line, const color_t &color, std::vector<point_t> &data,
+void dda(const line_t &line, const color_t &color, drawer_mediator &drawer,
          bool display);
 
 #endif // LAB_03_DDA_H

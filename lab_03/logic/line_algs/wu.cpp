@@ -8,7 +8,7 @@
 #include <utils.h>
 #include <wu.h>
 
-void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
+void wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
         bool display) {
   auto a = line.a, b = line.b;
 
@@ -46,11 +46,11 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
     color2 = update(color, fpart(yend) * xgap);
     if (display) {
       if (steep) {
-        data.emplace_back(ypx11, xpx11, color1);
-        data.emplace_back(ypx11 + 1, xpx11,color2);
+        drawer.draw_point(ypx11, xpx11, color1);
+        drawer.draw_point(ypx11 + 1, xpx11,color2);
       } else {
-        data.emplace_back(xpx11, ypx11, color1);
-        data.emplace_back(xpx11, ypx11 + 1, color2);
+        drawer.draw_point(xpx11, ypx11, color1);
+        drawer.draw_point(xpx11, ypx11 + 1, color2);
       }
     }
 
@@ -69,11 +69,11 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
     color2 = update(color, fpart(yend) * xgap);
     if (display) {
       if (steep) {
-        data.emplace_back(ypx12, xpx12, color1);
-        data.emplace_back(ypx12 + 1, xpx12, color2);
+        drawer.draw_point(ypx12, xpx12, color1);
+        drawer.draw_point(ypx12 + 1, xpx12, color2);
       } else {
-        data.emplace_back(xpx12, ypx12, color1);
-        data.emplace_back(xpx12, ypx12 + 1, color2);
+        drawer.draw_point(xpx12, ypx12, color1);
+        drawer.draw_point(xpx12, ypx12 + 1, color2);
       }
     }
   }
@@ -83,8 +83,8 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
       color1 = update(color, rfpart(intery));
       color2 = update(color, fpart(intery));
       if (display) {
-        data.emplace_back(ipart(intery), x, color1);
-        data.emplace_back(ipart(intery) + 1, x, color2);
+        drawer.draw_point(ipart(intery), x, color1);
+        drawer.draw_point(ipart(intery) + 1, x, color2);
       }
 
       intery += gradient;
@@ -96,8 +96,8 @@ void wu(const line_t &line, const color_t &color, std::vector<point_t> &data,
     color1 = update(color, rfpart(intery));
     color2 = update(color, fpart(intery));
     if (display){
-      data.emplace_back(x, ipart(intery), color1);
-      data.emplace_back(x, ipart(intery) + 1, color2);
+      drawer.draw_point(x, ipart(intery), color1);
+      drawer.draw_point(x, ipart(intery) + 1, color2);
     }
     intery += gradient;
   }

@@ -10,9 +10,8 @@ void drawer_mediator::draw_line(const point_t &p1, const point_t &p2,
   scene->addLine(p1.x, p1.y, p2.x, p2.y, {qRgb(color.r, color.g, color.b)});
 }
 
-void drawer_mediator::draw_points(std::vector<point_t> &points) {
-  for (const auto &p : points)
-    scene->addLine(p.x, p.y, p.x, p.y, {qRgb(p.color.r, p.color.g, p.color.b)});
+void drawer_mediator::draw_point(double x, double y, const color_t &color) {
+  scene->addLine(x, y, x, y, {qRgb(color.r, color.g, color.b)});
 }
 
 void drawer_mediator::clear() { scene->clear(); }
