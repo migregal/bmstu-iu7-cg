@@ -9,7 +9,7 @@
 
 struct color_t {
   int r = 0, g = 0, b = 0;
-//  int opacity = 255;
+  int alpha = 255;
 };
 
 struct point_t {
@@ -18,7 +18,6 @@ struct point_t {
 
   point_t() = default;
   point_t(double x_, double y_) : x(x_), y(y_) {}
-  point_t(double x_, double y_, color_t c_) : x(x_), y(y_), color(c_) {}
 };
 
 struct line_t {

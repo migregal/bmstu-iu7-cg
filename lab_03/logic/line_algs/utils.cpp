@@ -10,6 +10,5 @@ int clamp_255(const int n) {
 }
 
 color_t update(const color_t &color, double e) {
-  return {clamp_255(int(color.r + 255 * e)), clamp_255(int(color.g + 255 * e)),
-          clamp_255(int(color.b + 255 * e))};
+  return {color.r, color.g, color.b, clamp_255(int(255 * e))};
 }
