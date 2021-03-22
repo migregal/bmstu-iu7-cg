@@ -32,8 +32,7 @@ class MainWindow : public QMainWindow {
 
   double compare_methods(QtCharts::QBarSet *set, bool display);
 
-  int32_t compare_method_steps(int alg, QtCharts::QSplineSeries *series);
-//  int32_t compare_method_steps(int alg, QtCharts::QLineSeries *series);
+  int32_t compare_method_steps(int alg, QtCharts::QLineSeries *series);
 
 protected:
   void on_method_selected();

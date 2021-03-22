@@ -165,13 +165,13 @@ double MainWindow::compare_methods(QtCharts::QBarSet *set,
 inline double to_rads(double degree) { return degree * M_PI / 180; }
 
 int32_t MainWindow::compare_method_steps(int alg,
-                                         QtCharts::QSplineSeries *series) {
+                                         QtCharts::QLineSeries *series) {
 
-  auto arg = args{.command = DRAW_LINE_STEP_COUNT,
-      .method = static_cast<algs>(alg)};
+  auto arg =
+      args{.command = DRAW_LINE_STEP_COUNT, .method = static_cast<algs>(alg)};
 
   auto center = point_t{ui->canvas->width() / 2.0, ui->canvas->height() / 2.0};
-  auto r = 50;
+  auto r = 10;
   int measure, max = 0;
 
   for (int teta = 0; teta <= 90; teta++) {
@@ -234,6 +234,12 @@ void MainWindow::on_compare_clicked() {
 }
 
 void MainWindow::on_compare_steps_clicked() {
+  auto round_to_10 = [](int n) -> int {
+    int a = (n / 10) * 10;
+    int b = a + 10;
+    return ((n - a < b - n) ? a : b) + 10;
+  };
+
   auto *chart = new QtCharts::QChart();
   chart->setTitle("Сравнение ступенчатости алгоритмов");
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
@@ -245,12 +251,13 @@ void MainWindow::on_compare_steps_clicked() {
 
   auto *axisY = new QtCharts::QValueAxis();
   axisY->setTitleText("Кол-во ступенек");
+  axisY->setLabelFormat("%d");
   axisY->applyNiceNumbers();
   chart->addAxis(axisY, Qt::AlignLeft);
 
   auto max = 0;
   for (int i = DDA; i < STD; ++i) {
-    auto *series = new QtCharts::QSplineSeries();
+    auto *series = new QtCharts::QLineSeries();
 
     max = std::max(max, compare_method_steps(i, series));
     series->setName(alg_titles[i - DDA]);
@@ -260,7 +267,7 @@ void MainWindow::on_compare_steps_clicked() {
     series->attachAxis(axisY);
   }
 
-  axisY->setRange(0, 1.5 * max);
+  axisY->setRange(0, round_to_10(max));
 
   chart->legend()->setVisible(true);
   chart->legend()->setAlignment(Qt::AlignBottom);
