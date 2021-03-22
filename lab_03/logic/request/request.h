@@ -10,7 +10,7 @@
 #include <datatypes.h>
 #include <drawer_mediator.h>
 
-enum { DRAW_LINE, DRAW_BUNCH, CLEAR_SCREEN };
+enum { DRAW_LINE, DRAW_LINE_STEP_COUNT,  DRAW_BUNCH, CLEAR_SCREEN };
 
 enum algs { DDA, BRES_INT, BRES_FLOAT, BRES_ANIT, WU, STD };
 
@@ -28,7 +28,7 @@ class request {
   drawer_mediator &drawer;
 
 protected:
-  void draw_line(const color_t &color, bool display = true);
+  int draw_line(const color_t &color, bool display = true, bool steps = false);
 
   void draw_brunch(const color_t &color, bool display = true);
 

@@ -7,7 +7,7 @@
 
 #include <drawer_mediator.h>
 
-void dda(const line_t &line, const color_t &color, drawer_mediator &drawer,
-         bool display);
+int32_t dda(const line_t &line, const color_t &color, drawer_mediator &drawer,
+         bool display, bool steps);
 
 #endif // LAB_03_DDA_H

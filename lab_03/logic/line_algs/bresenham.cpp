@@ -7,8 +7,8 @@
 #include <bresenham.h>
 #include <utils.h>
 
-void bresenham_int(const line_t &line, const color_t &color,
-                   drawer_mediator &drawer, bool display) {
+int32_t bresenham_int(const line_t &line, const color_t &color,
+                      drawer_mediator &drawer, bool display, bool steps) {
   int32_t dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
 
   auto xsign = sign(dx), ysign = sign(dy);
@@ -25,6 +25,8 @@ void bresenham_int(const line_t &line, const color_t &color,
   auto e = m - dx;
 
   int32_t x = round(line.a.x), y = round(line.a.y);
+  int32_t step = 1, x_buf = x, y_buf = y;
+
   for (auto i = 0; i <= dx; ++i) {
     if (display)
       drawer.draw_point(x, y, color);
@@ -43,11 +45,22 @@ void bresenham_int(const line_t &line, const color_t &color,
         x += xsign;
       e += m;
     }
+
+    if(!steps)
+      continue;
+
+    if (!((x_buf == x && y_buf != y) || (x_buf != x && y_buf == y)))
+      ++step;
+
+    x_buf = x;
+    y_buf = y;
   }
+
+  return step;
 }
 
-void bresenham_float(const line_t &line, const color_t &color,
-                     drawer_mediator &drawer, bool display) {
+int32_t bresenham_float(const line_t &line, const color_t &color,
+                        drawer_mediator &drawer, bool display, bool steps) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   int32_t xsign = sign(dx), ysign = sign(dy);
 
@@ -63,6 +76,9 @@ void bresenham_float(const line_t &line, const color_t &color,
   auto e = m - 0.5;
 
   auto x = round(line.a.x), y = round(line.a.y);
+  auto x_buf = x, y_buf = y;
+  int32_t step = 1;
+
   for (auto i = 0; i <= dx; ++i) {
     if (display)
       drawer.draw_point(x, y, color);
@@ -81,11 +97,23 @@ void bresenham_float(const line_t &line, const color_t &color,
         x += xsign;
       e += m;
     }
+
+    if(!steps)
+      continue;
+
+    if (!((x_buf == x && y_buf != y) || (x_buf != x && y_buf == y)))
+      ++step;
+
+    x_buf = x;
+    y_buf = y;
   }
+
+  return step;
 }
 
-void bresenham_antialised(const line_t &line, const color_t &color,
-                          drawer_mediator &drawer, bool display) {
+int32_t bresenham_antialised(const line_t &line, const color_t &color,
+                             drawer_mediator &drawer, bool display,
+                             bool steps) {
   auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
   auto xsign = sign(dx), ysign = sign(dy);
 
@@ -106,6 +134,9 @@ void bresenham_antialised(const line_t &line, const color_t &color,
     drawer.draw_point(x, y, color1);
 
   auto W = 1 - m;
+  auto x_buf = x, y_buf = y;
+  int32_t step = 1;
+
   for (int i = 0; i <= dx; ++i) {
     if (e < W) {
       if (0 == change)
@@ -122,5 +153,16 @@ void bresenham_antialised(const line_t &line, const color_t &color,
     color1 = update(color, e);
     if (display)
       drawer.draw_point(x, y, color1);
+
+    if(!steps)
+      continue;
+
+    if (!((x_buf == x && y_buf != y) || (x_buf != x && y_buf == y)))
+      ++step;
+
+    x_buf = x;
+    y_buf = y;
   }
+
+  return step;
 }

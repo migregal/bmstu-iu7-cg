@@ -8,8 +8,8 @@
 #include <utils.h>
 #include <wu.h>
 
-void wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
-        bool display) {
+int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
+           bool display, bool steps) {
   auto a = line.a, b = line.b;
 
   auto ipart = [](double x) -> int { return int(std::floor(x)); };
@@ -47,7 +47,7 @@ void wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
     if (display) {
       if (steep) {
         drawer.draw_point(ypx11, xpx11, color1);
-        drawer.draw_point(ypx11 + 1, xpx11,color2);
+        drawer.draw_point(ypx11 + 1, xpx11, color2);
       } else {
         drawer.draw_point(xpx11, ypx11, color1);
         drawer.draw_point(xpx11, ypx11 + 1, color2);
@@ -89,16 +89,18 @@ void wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
 
       intery += gradient;
     }
-    return;
+    return 0;
   }
-
+  
   for (int x = xpx11 + 1; x < xpx12; x++) {
     color1 = update(color, rfpart(intery));
     color2 = update(color, fpart(intery));
-    if (display){
+    if (display) {
       drawer.draw_point(x, ipart(intery), color1);
       drawer.draw_point(x, ipart(intery) + 1, color2);
     }
     intery += gradient;
   }
+
+  return 0;
 }

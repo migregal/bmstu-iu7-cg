@@ -9,6 +9,7 @@
 #include <QBarCategoryAxis>
 #include <QBarSeries>
 #include <QChartView>
+#include <QLineSeries>
 #include <QValueAxis>
 
 #include <QGuiApplication>
@@ -18,6 +19,7 @@
 #include <design.h>
 
 #include <MainWindow.h>
+#include <cmath>
 #include <request.h>
 
 extern const char *alg_titles[ALGS_TITLES_LEN];
@@ -61,6 +63,9 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(ui->cmp_apply, &QPushButton::clicked, this,
           &MainWindow::on_compare_clicked);
+
+  connect(ui->cmp_steps_apply, &QPushButton::clicked, this,
+          &MainWindow::on_compare_steps_clicked);
 
   connect(ui->clear_screen_apply, &QPushButton::clicked, this,
           &MainWindow::clear_screen);
@@ -135,12 +140,12 @@ double MainWindow::measure_avg(int method, bool display) {
 
   auto res = 0.0;
 
-  for (int i = 0; i < 1000; ++i) {
+  for (int i = 0; i < 100; ++i) {
     res += clock(req, display);
     request(*mediator, {.command = CLEAR_SCREEN}).execute({});
   }
 
-  return res / 1000;
+  return res / 100;
 }
 
 double MainWindow::compare_methods(QtCharts::QBarSet *set,
@@ -152,6 +157,32 @@ double MainWindow::compare_methods(QtCharts::QBarSet *set,
     measure = measure_avg(foo, display);
     max = std::max(max, measure);
     *set << measure;
+  }
+
+  return max;
+}
+
+inline double to_rads(double degree) { return degree * M_PI / 180; }
+
+int32_t MainWindow::compare_method_steps(int alg,
+                                         QtCharts::QSplineSeries *series) {
+
+  auto arg = args{.command = DRAW_LINE_STEP_COUNT,
+      .method = static_cast<algs>(alg)};
+
+  auto center = point_t{ui->canvas->width() / 2.0, ui->canvas->height() / 2.0};
+  auto r = 50;
+  int measure, max = 0;
+
+  for (int teta = 0; teta <= 90; teta++) {
+    auto line = line_t{.a = center,
+                       .b = {center.x + r * cos(to_rads(teta)),
+                             center.y + r * sin(to_rads(teta))}};
+    arg.line = line;
+    measure = request(*mediator, arg).execute({}, false);
+
+    max = std::max(max, measure);
+    series->append(teta, measure);
   }
 
   return max;
@@ -186,6 +217,50 @@ void MainWindow::on_compare_clicked() {
   axisY->applyNiceNumbers();
   chart->addAxis(axisY, Qt::AlignLeft);
   series->attachAxis(axisY);
+
+  chart->legend()->setVisible(true);
+  chart->legend()->setAlignment(Qt::AlignBottom);
+
+  auto *chartView = new QtCharts::QChartView(chart);
+  chartView->setRenderHint(QPainter::Antialiasing);
+
+  chartWindow = new QMainWindow();
+  chartWindow->setCentralWidget(chartView);
+  chartWindow->resize(420, 300);
+  chartWindow->setGeometry(QStyle::alignedRect(
+      Qt::LeftToRight, Qt::AlignCenter, chartWindow->size(),
+      QGuiApplication::primaryScreen()->availableGeometry()));
+  chartWindow->show();
+}
+
+void MainWindow::on_compare_steps_clicked() {
+  auto *chart = new QtCharts::QChart();
+  chart->setTitle("Сравнение ступенчатости алгоритмов");
+  chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
+
+  auto *axisX = new QtCharts::QValueAxis();
+  axisX->setTitleText("Угол");
+  axisX->applyNiceNumbers();
+  chart->addAxis(axisX, Qt::AlignBottom);
+
+  auto *axisY = new QtCharts::QValueAxis();
+  axisY->setTitleText("Кол-во ступенек");
+  axisY->applyNiceNumbers();
+  chart->addAxis(axisY, Qt::AlignLeft);
+
+  auto max = 0;
+  for (int i = DDA; i < STD; ++i) {
+    auto *series = new QtCharts::QSplineSeries();
+
+    max = std::max(max, compare_method_steps(i, series));
+    series->setName(alg_titles[i - DDA]);
+
+    chart->addSeries(series);
+    series->attachAxis(axisX);
+    series->attachAxis(axisY);
+  }
+
+  axisY->setRange(0, 1.5 * max);
 
   chart->legend()->setVisible(true);
   chart->legend()->setAlignment(Qt::AlignBottom);

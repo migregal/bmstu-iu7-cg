@@ -7,13 +7,13 @@
 
 #include <drawer_mediator.h>
 
-void bresenham_int(const line_t &line, const color_t &color,
-                   drawer_mediator &drawer, bool display);
+int32_t bresenham_int(const line_t &line, const color_t &color,
+                   drawer_mediator &drawer, bool display,bool steps);
 
-void bresenham_float(const line_t &line, const color_t &color,
-                     drawer_mediator &drawer, bool display);
+int32_t bresenham_float(const line_t &line, const color_t &color,
+                     drawer_mediator &drawer, bool display,bool steps);
 
-void bresenham_antialised(const line_t &line, const color_t &color,
-                          drawer_mediator &drawer, bool display);
+int32_t bresenham_antialised(const line_t &line, const color_t &color,
+                          drawer_mediator &drawer, bool display,bool steps);
 
 #endif // LAB_03_BRESENHAM_H

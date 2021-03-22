@@ -65,6 +65,7 @@ public:
   QLabel *bunch_setp_label;
   QSpinBox *bunch_r;
   QPushButton *cmp_apply;
+  QPushButton *cmp_steps_apply;
   QPushButton *clear_screen_apply;
   QMenuBar *menubar;
   QStatusBar *statusbar;
@@ -255,6 +256,7 @@ public:
     bunch_r->setObjectName(QString::fromUtf8("bunch_r"));
     bunch_r->setFont(font);
     bunch_r->setRange(0, 500);
+    bunch_r->setValue(200);
 
     gridLayout_2->addWidget(bunch_r, 2, 1, 1, 1);
 
@@ -267,6 +269,7 @@ public:
     bunch_step->setObjectName(QString::fromUtf8("bunch_step"));
     bunch_step->setFont(font);
     bunch_step->setRange(1, 360);
+    bunch_step->setValue(15);
 
     gridLayout_2->addWidget(bunch_step, 3, 1, 1, 1);
 
@@ -290,6 +293,12 @@ public:
     cmp_apply->setFont(font);
 
     verticalLayout->addWidget(cmp_apply);
+
+    cmp_steps_apply = new QPushButton(frame);
+    cmp_steps_apply->setObjectName(QString::fromUtf8("cmp_steps_apply"));
+    cmp_steps_apply->setFont(font);
+
+    verticalLayout->addWidget(cmp_steps_apply);
 
     clear_screen_apply = new QPushButton(frame);
     clear_screen_apply->setObjectName(QString::fromUtf8("clear_screen"));
@@ -364,13 +373,18 @@ public:
         nullptr));
     bunch_setp_label->setText(QCoreApplication::translate(
         "MainWindow", "\320\250\320\260\320\263, \302\260", nullptr));
-    cmp_apply->setText(
-        QCoreApplication::translate("MainWindow",
-                                    "\320\241\321\200\320\260\320\262\320\275"
-                                    "\320\265\320\275\320\270\320\265 "
-                                    "\320\260\320\273\320\263\320\276\321\200"
-                                    "\320\270\321\202\320\274\320\276\320\262",
-                                    nullptr));
+    cmp_apply->setText(QCoreApplication::translate(
+        "MainWindow",
+        "\320\241\321\200\320\260\320\262\320\275\320\265\320\275\320\270\320"
+        "\265 \320\262\321\200\320\265\320\274\320\265\320\275\320\270",
+        nullptr));
+    cmp_steps_apply->setText(QCoreApplication::translate(
+        "MainWindow",
+        "\320\241\321\200\320\260\320\262\320\275\320\265\320\275\320\270\320"
+        "\265 "
+        "\321\201\321\202\321\203\320\277\320\265\320\275\321\207\320\260\321"
+        "\202\320\276\321\201\321\202\320\270",
+        nullptr));
     clear_screen_apply->setText(QCoreApplication::translate(
         "MainWindow",
         "\320\236\321\207\320\270\321\201\321\202\320\270\321\202\321\214 "
