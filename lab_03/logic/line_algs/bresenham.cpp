@@ -9,7 +9,7 @@
 
 void bresenham_int(const line_t &line, const color_t &color,
                    drawer_mediator &drawer, bool display) {
-  auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
+  int32_t dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
 
   auto xsign = sign(dx), ysign = sign(dy);
 
@@ -24,7 +24,7 @@ void bresenham_int(const line_t &line, const color_t &color,
   auto m = 2 * dy, m1 = 2 * dx;
   auto e = m - dx;
 
-  auto x = round(line.a.x), y = round(line.a.y);
+  int32_t x = round(line.a.x), y = round(line.a.y);
   for (auto i = 0; i <= dx; ++i) {
     if (display)
       drawer.draw_point(x, y, color);
