@@ -17,9 +17,8 @@ int32_t dda(const line_t &line, const color_t &color, drawer_mediator &drawer,
   int32_t step = 1;
 
   for (int i = 0; i < l; ++i) {
-    auto rx = std::round(x), ry = std::round(y);
     if (display)
-      drawer.draw_point(rx, ry, color);
+      drawer.draw_point(std::round(x), std::round(y), color);
 
     x += xsign;
     y += ysign;
@@ -27,8 +26,8 @@ int32_t dda(const line_t &line, const color_t &color, drawer_mediator &drawer,
     if (!steps)
       continue;
 
-    if (!((round(x_buf) == round(x) && round(y_buf) != round(y)) ||
-          (round(x_buf) != round(x) && round(y_buf) == round(y))))
+    if (std::round(x_buf) != std::round(x) &&
+        std::round(y_buf) != std::round(y))
       ++step;
 
     x_buf = x;

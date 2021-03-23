@@ -46,10 +46,10 @@ int32_t bresenham_int(const line_t &line, const color_t &color,
       e += m;
     }
 
-    if(!steps)
+    if (!steps)
       continue;
 
-    if (!((x_buf == x && y_buf != y) || (x_buf != x && y_buf == y)))
+    if (x_buf != x && y_buf != y)
       ++step;
 
     x_buf = x;
@@ -98,10 +98,10 @@ int32_t bresenham_float(const line_t &line, const color_t &color,
       e += m;
     }
 
-    if(!steps)
+    if (!steps)
       continue;
 
-    if (!((x_buf == x && y_buf != y) || (x_buf != x && y_buf == y)))
+    if (x_buf != x && y_buf != y)
       ++step;
 
     x_buf = x;
@@ -154,10 +154,10 @@ int32_t bresenham_antialised(const line_t &line, const color_t &color,
     if (display)
       drawer.draw_point(x, y, color1);
 
-    if(!steps)
+    if (!steps)
       continue;
 
-    if (!((x_buf == x && y_buf != y) || (x_buf != x && y_buf == y)))
+    if (x_buf != x && y_buf != y)
       ++step;
 
     x_buf = x;
