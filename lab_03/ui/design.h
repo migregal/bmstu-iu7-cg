@@ -361,7 +361,7 @@ public:
     bunch_label->setText(QCoreApplication::translate(
         "MainWindow",
         "\320\237\320\260\321\200\320\260\320\274\320\265\321\202\321\200\321"
-        "\213 \320\277\321\203\321\207\320\272\320\260",
+        "\213 \321\201\320\277\320\265\320\272\321\202\321\200\320\260",
         nullptr));
     bunch_r_label->setText(QCoreApplication::translate(
         "MainWindow", "\320\240\320\260\320\264\320\270\321\203\321\201",
