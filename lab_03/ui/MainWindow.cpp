@@ -3,6 +3,8 @@
 //
 
 #include <chrono>
+#include <cmath>
+#include <vector>
 
 #include <QStringListModel>
 
@@ -19,7 +21,6 @@
 #include <design.h>
 
 #include <MainWindow.h>
-#include <cmath>
 #include <request.h>
 
 extern const char *alg_titles[ALGS_TITLES_LEN];
@@ -121,52 +122,29 @@ void MainWindow::on_draw_bunch_clicked() {
     request(*mediator, arg).execute({255, 255, 255});
 }
 
-inline uint64_t clock(request &req, bool display) {
-  auto start = std::chrono::steady_clock::now();
-  req.execute({}, display);
-  auto end = std::chrono::steady_clock::now();
-
-  return std::chrono::duration_cast<std::chrono::microseconds>(end - start)
-      .count();
-}
-
-double MainWindow::measure_avg(int method, bool display, double r,
-                               int32_t step) {
-  auto bunch =
-      bunch_t{.center = {ui->canvas->width() / 2.0, ui->canvas->height() / 2.0},
-              .r = r,
-              .step = step};
-  auto arg = args{.command = DRAW_BUNCH, .method = method, .bunch = bunch};
-  auto req = request(*mediator, arg);
-
-  auto res = 0.0;
-
-  for (int i = 0; i < 100; ++i) {
-    res += clock(req, display);
-    request(*mediator, {.command = CLEAR_SCREEN}).execute({});
-  }
-
-  return res / 100;
-}
-
 double MainWindow::compare_methods(QtCharts::QBarSet *set, double r,
                                    int32_t step, bool display = false) {
-  double measure, max = 0;
+  auto max = 0.;
+  auto d = std::vector<double>();
 
-  for (int fooInt = DDA; fooInt <= STD; fooInt++) {
-    algs foo = static_cast<algs>(fooInt);
-    measure = measure_avg(foo, display, r, step);
-    max = std::max(max, measure);
-    *set << measure;
+  auto bunch = bunch_t{.center = {}, .r = r, .step = step};
+  auto arg =
+      args{.command = MEASURE_TIMES, .m_bunch = {.bunch = bunch, .time = &d}};
+
+  request{*mediator, arg}.execute({}, false);
+  ui->canvas->scene()->clear();
+
+  for (auto &i : d) {
+    *set << i;
+    max = std::max(max, i);
   }
 
   return max;
 }
 
-inline double to_rads(double degree) { return degree * M_PI / 180; }
-
 int32_t MainWindow::compare_method_steps(int alg, QtCharts::QLineSeries *series,
                                          double r, int step) {
+  auto to_rads = [](double degree) -> double { return degree * M_PI / 180; };
 
   auto arg =
       args{.command = DRAW_LINE_STEP_COUNT, .method = static_cast<algs>(alg)};

@@ -7,10 +7,18 @@
 
 #define ALGS_TITLES_LEN 6
 
+#include <vector>
+
 #include <datatypes.h>
 #include <drawer_mediator.h>
 
-enum { DRAW_LINE, DRAW_LINE_STEP_COUNT,  DRAW_BUNCH, CLEAR_SCREEN };
+enum {
+  DRAW_LINE,
+  DRAW_LINE_STEP_COUNT,
+  DRAW_BUNCH,
+  MEASURE_TIMES,
+  CLEAR_SCREEN
+};
 
 enum algs { DDA, BRES_INT, BRES_FLOAT, BRES_ANIT, WU, STD };
 
@@ -20,6 +28,7 @@ struct args {
   union {
     line_t line;
     bunch_t bunch;
+    measure_bunch_t m_bunch;
   };
 };
 
@@ -31,6 +40,8 @@ protected:
   int draw_line(const color_t &color, bool display = true, bool steps = false);
 
   void draw_brunch(const color_t &color, bool display = true);
+
+  void measure_avg_times(bool display = false);
 
 public:
   request(drawer_mediator &mediator, const args &arg);

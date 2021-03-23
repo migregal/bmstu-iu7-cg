@@ -6,6 +6,7 @@
 #define LAB_03_DATATYPES_H
 
 #include <cstdint>
+#include <vector>
 
 struct color_t {
   int r = 0, g = 0, b = 0;
@@ -28,6 +29,11 @@ struct bunch_t {
   point_t center;
   double r = 1;
   int32_t step = 1;
+};
+
+struct measure_bunch_t {
+  bunch_t bunch;
+  std::vector<double> *time = nullptr;
 };
 
 #endif // LAB_03_DATATYPES_H

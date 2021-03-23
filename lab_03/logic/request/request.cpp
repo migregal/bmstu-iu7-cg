@@ -2,8 +2,10 @@
 // Created by gregory on 15.03.2021.
 //
 
-#include <bresenham.h>
+#include <chrono>
 #include <cmath>
+
+#include <bresenham.h>
 #include <dda.h>
 #include <wu.h>
 
@@ -26,6 +28,9 @@ int request::execute(const color_t &color, bool display) {
   case DRAW_BUNCH:
     draw_brunch(color, display);
     return 0;
+  case MEASURE_TIMES:
+    measure_avg_times(display);
+    break;
   case CLEAR_SCREEN:
     drawer.clear();
     break;
@@ -106,4 +111,99 @@ void request::draw_brunch(const color_t &color, bool display) {
           {center.x + r * cos(to_rads(i)), center.y + r * sin(to_rads(i))}},
          color, drawer, display, false);
   }
+}
+
+void request::measure_avg_times(bool display) {
+  auto count = 1000;
+  using std::chrono::duration;
+  using std::chrono::duration_cast;
+  using std::chrono::high_resolution_clock;
+  using std::chrono::microseconds;
+
+  auto end = high_resolution_clock::now();
+  auto start = high_resolution_clock::now();
+
+  for (int i = 0; i < count; ++i)
+    for (auto t = 0; t < 360; t += arg.m_bunch.bunch.step) {
+      dda({{},
+           {arg.m_bunch.bunch.r * cos(to_rads(t)),
+            arg.m_bunch.bunch.r * sin(to_rads(t))}},
+          {}, drawer, display, false);
+    }
+  end = high_resolution_clock::now();
+
+  arg.m_bunch.time->push_back(
+      (double)duration_cast<microseconds>(end - start).count() / count);
+
+  start = high_resolution_clock::now();
+
+  for (int i = 0; i < count; ++i)
+    for (auto t = 0; t < 360; t += arg.m_bunch.bunch.step) {
+      bresenham_int({{},
+                     {arg.m_bunch.bunch.r * cos(to_rads(t)),
+                      arg.m_bunch.bunch.r * sin(to_rads(t))}},
+                    {}, drawer, display, false);
+    }
+  end = high_resolution_clock::now();
+
+  arg.m_bunch.time->push_back(
+      (double)duration_cast<microseconds>(end - start).count() / count);
+
+  start = high_resolution_clock::now();
+
+  for (int i = 0; i < count; ++i)
+    for (auto t = 0; t < 360; t += arg.m_bunch.bunch.step) {
+      bresenham_float({{},
+                       {arg.m_bunch.bunch.r * cos(to_rads(t)),
+                        arg.m_bunch.bunch.r * sin(to_rads(t))}},
+                      {}, drawer, display, false);
+    }
+  end = high_resolution_clock::now();
+
+  arg.m_bunch.time->push_back(
+      (double)duration_cast<microseconds>(end - start).count() / count);
+
+  start = high_resolution_clock::now();
+
+  for (int i = 0; i < count; ++i)
+    for (auto t = 0; t < 360; t += arg.m_bunch.bunch.step) {
+      bresenham_antialised({{},
+                            {arg.m_bunch.bunch.r * cos(to_rads(t)),
+                             arg.m_bunch.bunch.r * sin(to_rads(t))}},
+                           {}, drawer, display, false);
+    }
+  end = high_resolution_clock::now();
+
+  arg.m_bunch.time->push_back(
+      (double)duration_cast<microseconds>(end - start).count() / count);
+
+  start = high_resolution_clock::now();
+
+  for (int i = 0; i < count; ++i)
+    for (auto t = 0; t < 360; t += arg.m_bunch.bunch.step) {
+      wu({{},
+          {arg.m_bunch.bunch.r * cos(to_rads(t)),
+           arg.m_bunch.bunch.r * sin(to_rads(t))}},
+         {}, drawer, display, false);
+    }
+  end = high_resolution_clock::now();
+
+  arg.m_bunch.time->push_back(
+      (double)duration_cast<microseconds>(end - start).count() / count);
+
+  start = high_resolution_clock::now();
+
+  for (int i = 0; i < count; ++i)
+    for (auto t = 0; t < 360; t += arg.m_bunch.bunch.step) {
+      drawer.draw_line({},
+                       {arg.m_bunch.bunch.r * cos(to_rads(t)),
+                        arg.m_bunch.bunch.r * sin(to_rads(t))},
+                       {});
+    }
+  end = high_resolution_clock::now();
+
+  arg.m_bunch.time->push_back(
+      (double)duration_cast<microseconds>(end - start).count() / count);
+
+  drawer.clear();
 }
