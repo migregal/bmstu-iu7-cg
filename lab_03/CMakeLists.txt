@@ -23,7 +23,7 @@ include_directories(${LOGIC_DOMAIN}/line_algs)
 
 add_executable(
         ${PROJECT_NAME}
-        ${UI_DOMAIN}/main.cpp
+         main.cpp
         ${UI_DOMAIN}/MainWindow.h
         ${UI_DOMAIN}/MainWindow.cpp
         ${LOGIC_DOMAIN}/mediator/drawer_mediator.h
