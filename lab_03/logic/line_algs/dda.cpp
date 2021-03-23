@@ -17,7 +17,7 @@ int32_t dda(const line_t &line, const color_t &color, drawer_mediator &drawer,
   int32_t step = 1;
 
   for (int i = 0; i < l; ++i) {
-    auto rx = round(x), ry = round(y);
+    auto rx = std::round(x), ry = std::round(y);
     if (display)
       drawer.draw_point(rx, ry, color);
 
