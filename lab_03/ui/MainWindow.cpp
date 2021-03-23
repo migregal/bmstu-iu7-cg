@@ -21,6 +21,7 @@
 #include <design.h>
 
 #include <MainWindow.h>
+#include <QMessageBox>
 #include <request.h>
 
 extern const char *alg_titles[ALGS_TITLES_LEN];
@@ -91,9 +92,22 @@ void MainWindow::on_color_selected() {
 }
 
 void MainWindow::on_draw_line_clicked() {
-  auto line = line_t{
-      .a = {(double)ui->x1_spinbox->value(), (double)ui->y1_spinbox->value()},
-      .b = {(double)ui->x2_spinbox->value(), (double)ui->y2_spinbox->value()}};
+  auto a =
+      point_t{(double)ui->x1_spinbox->value(), (double)ui->y1_spinbox->value()};
+  auto b =
+      point_t{(double)ui->x2_spinbox->value(), (double)ui->y2_spinbox->value()};
+
+  if (a.x == b.x && a.y == b.y) {
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Critical);
+    msg.setWindowTitle("Ошибка");
+    msg.setText(QString("Отрезок не может быть построен, т.к. начало и "
+                        "конец совпадают\n"));
+    msg.exec();
+    return;
+  }
+
+  auto line = line_t{.a = a, .b = b};
 
   auto method_n = ui->method_list->selectionModel()->selectedIndexes()[0].row();
 
@@ -106,6 +120,17 @@ void MainWindow::on_draw_line_clicked() {
 }
 
 void MainWindow::on_draw_bunch_clicked() {
+
+  if (0 == ui->bunch_r->value()) {
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Critical);
+    msg.setWindowTitle("Ошибка");
+    msg.setText(QString("Спектр не может быть построен, т.к. радиус равен "
+                        "нулю\n"));
+    msg.exec();
+    return;
+  }
+
   auto bunch =
       bunch_t{.center = {ui->canvas->width() / 2.0, ui->canvas->height() / 2.0},
               .r = (double)ui->bunch_r->value(),
@@ -169,9 +194,18 @@ int32_t MainWindow::compare_method_steps(int alg, QtCharts::QLineSeries *series,
 void MainWindow::on_compare_clicked() {
   auto *set0 = new QtCharts::QBarSet("Время без отрисовки");
   auto r = ui->bunch_r->value();
-  auto step = ui->bunch_step->value();
 
-  auto max = compare_methods(set0, r, step, false);
+  if (0 == r) {
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Critical);
+    msg.setWindowTitle("Ошибка");
+    msg.setText(QString("Нельзя провести сравнение, т.к. заданный радиус "
+                        "спектра равен нулю."));
+    msg.exec();
+    return;
+  }
+
+  auto max = compare_methods(set0, r, ui->bunch_step->value(), false);
 
   auto *series = new QtCharts::QBarSeries();
   series->append(set0);
@@ -181,7 +215,7 @@ void MainWindow::on_compare_clicked() {
   chart->setTitle(QString("Сравнение времени работы алгоритмов<br>Длина "
                           "отрезка: %1 Шаг поворота: %2")
                       .arg(r)
-                      .arg(step));
+                      .arg(ui->bunch_step->value()));
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
   QStringList categories;
@@ -225,12 +259,22 @@ void MainWindow::on_compare_steps_clicked() {
   };
 
   auto r = ui->bunch_r->value();
-  auto step = ui->bunch_step->value();
+
+  if (0 == r) {
+    QMessageBox msg;
+    msg.setIcon(QMessageBox::Critical);
+    msg.setWindowTitle("Ошибка");
+    msg.setText(QString("Нельзя провести сравнение, т.к. заданный радиус "
+                        "спектра равен нулю."));
+    msg.exec();
+    return;
+  }
+
   auto *chart = new QtCharts::QChart();
   chart->setTitle(QString("Сравнение ступенчатости алгоритмов<br>Длина "
                           "отрезка: %1 Шаг поворота: %2")
                       .arg(r)
-                      .arg(step));
+                      .arg(ui->bunch_step->value()));
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
   auto *axisX = new QtCharts::QValueAxis();
@@ -248,7 +292,8 @@ void MainWindow::on_compare_steps_clicked() {
   for (int i = DDA; i < STD; ++i) {
     auto *series = new QtCharts::QLineSeries();
 
-    max = std::max(max, compare_method_steps(i, series, r, step));
+    max = std::max(max,
+                   compare_method_steps(i, series, r, ui->bunch_step->value()));
     series->setName(alg_titles[i - DDA]);
 
     chart->addSeries(series);
