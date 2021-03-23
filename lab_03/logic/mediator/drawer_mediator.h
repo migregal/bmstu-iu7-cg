@@ -2,8 +2,8 @@
 // Created by gregory on 03.03.2021.
 //
 
-#ifndef LAB_01_DRAWER_MEDIATOR_H
-#define LAB_01_DRAWER_MEDIATOR_H
+#ifndef LAB_04_DRAWER_MEDIATOR_H
+#define LAB_04_DRAWER_MEDIATOR_H
 
 #include <QGraphicsScene>
 #include <datatypes.h>
@@ -23,4 +23,4 @@ public:
   void clear();
 };
 
-#endif // LAB_01_DRAWER_MEDIATOR_H
+#endif // LAB_04_DRAWER_MEDIATOR_H
