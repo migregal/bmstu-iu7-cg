@@ -5,9 +5,9 @@
 #include <cinttypes>
 #include <cmath>
 
+#include <QDebug>
 #include <utils.h>
 #include <wu.h>
-
 int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
            bool display, bool steps) {
   auto a = line.a, b = line.b;
@@ -78,29 +78,29 @@ int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
     }
   }
 
-  if (steep) {
-    for (int x = xpx11 + 1; x < xpx12; x++) {
-      color1 = update(color, rfpart(intery));
-      color2 = update(color, fpart(intery));
-      if (display) {
-        drawer.draw_point(ipart(intery), x, color1);
-        drawer.draw_point(ipart(intery) + 1, x, color2);
-      }
+  auto step = 1;
 
-      intery += gradient;
-    }
-    return 0;
-  }
-  
   for (int x = xpx11 + 1; x < xpx12; x++) {
     color1 = update(color, rfpart(intery));
     color2 = update(color, fpart(intery));
+
     if (display) {
-      drawer.draw_point(x, ipart(intery), color1);
-      drawer.draw_point(x, ipart(intery) + 1, color2);
+      if (steep) {
+        drawer.draw_point(ipart(intery), x, color1);
+        drawer.draw_point(ipart(intery) + 1, x, color2);
+      } else {
+        drawer.draw_point(x, ipart(intery), color1);
+        drawer.draw_point(x, ipart(intery) + 1, color2);
+      }
     }
+
+    if (steps && x < xpx12) {
+      if (ipart(intery) != ipart(intery + gradient))
+        ++step;
+    }
+
     intery += gradient;
   }
 
-  return 0;
+  return step;
 }
