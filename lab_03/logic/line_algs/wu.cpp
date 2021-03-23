@@ -8,69 +8,6 @@
 #include <QDebug>
 #include <utils.h>
 #include <wu.h>
-//int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
-//           bool display, bool steps) {
-//  auto dx = line.b.x - line.a.x, dy = line.b.y - line.a.y;
-//  auto m = 1, shag = 1, step = 1;
-//
-//  color_t color1, color2;
-//
-//  if (abs(dy) > fabs(dx)) {
-//    if (dy != 0)
-//      m = dx / dy;
-//    auto m1 = m;
-//    if (line.a.y > line.b.y) {
-//      m1 *= -1;
-//      shag *= -1;
-//    }
-//
-//    auto x = line.a.x;
-//    for (auto y = int(line.a.y); y != int(line.b.y); y += shag) {
-//      auto d1 = x - floor(x);
-//      auto d2 = 1 - d1;
-//
-//      color1 = update(color, fabs(d2));
-//      color2 = update(color, fabs(d1));
-//
-//      if (display) {
-//        drawer.draw_point(x, y, color1);
-//        drawer.draw_point(x + 1, y, color2);
-//      }
-//
-//      if (steps and y < round(line.b.y))
-//        if (int(x) != int(x + m))
-//          ++step;
-//      x += m1;
-//    }
-//  } else {
-//    if (dx != 0)
-//      m = dy / dx;
-//    auto m1 = m;
-//
-//    if (line.a.x > line.b.x) {
-//      shag *= -1;
-//      m1 *= -1;
-//    }
-//
-//    auto y = line.a.y;
-//    for (auto x = int(line.a.x); x != int(line.b.x); x += shag) {
-//      auto d1 = y - floor(y);
-//      auto d2 = 1 - d1;
-//
-//      color1 = update(color, fabs(d2));
-//      color2 = update(color, fabs(d1));
-//      if (display) {
-//        drawer.draw_point(x, y, color1);
-//        drawer.draw_point(x, y + 1, color2);
-//      }
-//      if (steps && x < round(line.b.x))
-//        if (int(y) != int(y + m))
-//          step += 1;
-//      y += m1;
-//    }
-//  }
-//  return step;
-//}
 
 int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
            bool display, bool steps) {
@@ -142,7 +79,7 @@ int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
     }
   }
 
-  auto step = 1;
+  auto step = 0;
 
   for (int x = xpx11 + 1; x < xpx12; x++) {
     color1 = update(color, rfpart(intery));
