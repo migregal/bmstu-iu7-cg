@@ -26,8 +26,8 @@ struct line_t {
 
 struct bunch_t {
   point_t center;
-  uint32_t r = 1;
-  uint32_t step = 1;
+  double r = 1;
+  int32_t step = 1;
 };
 
 #endif // LAB_03_DATATYPES_H

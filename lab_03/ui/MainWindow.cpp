@@ -107,8 +107,8 @@ void MainWindow::on_draw_line_clicked() {
 void MainWindow::on_draw_bunch_clicked() {
   auto bunch =
       bunch_t{.center = {ui->canvas->width() / 2.0, ui->canvas->height() / 2.0},
-              .r = (uint32_t)ui->bunch_r->value(),
-              .step = (uint32_t)ui->bunch_step->value()};
+              .r = (double)ui->bunch_r->value(),
+              .step = (int32_t)ui->bunch_step->value()};
 
   auto method_n = ui->method_list->selectionModel()->selectedIndexes()[0].row();
 
@@ -130,11 +130,12 @@ inline uint64_t clock(request &req, bool display) {
       .count();
 }
 
-double MainWindow::measure_avg(int method, bool display) {
+double MainWindow::measure_avg(int method, bool display, double r,
+                               int32_t step) {
   auto bunch =
       bunch_t{.center = {ui->canvas->width() / 2.0, ui->canvas->height() / 2.0},
-              .r = (uint32_t)ui->bunch_r->value(),
-              .step = (uint32_t)ui->bunch_step->value()};
+              .r = r,
+              .step = step};
   auto arg = args{.command = DRAW_BUNCH, .method = method, .bunch = bunch};
   auto req = request(*mediator, arg);
 
@@ -148,13 +149,13 @@ double MainWindow::measure_avg(int method, bool display) {
   return res / 100;
 }
 
-double MainWindow::compare_methods(QtCharts::QBarSet *set,
-                                   bool display = false) {
+double MainWindow::compare_methods(QtCharts::QBarSet *set, double r,
+                                   int32_t step, bool display = false) {
   double measure, max = 0;
 
   for (int fooInt = DDA; fooInt <= STD; fooInt++) {
     algs foo = static_cast<algs>(fooInt);
-    measure = measure_avg(foo, display);
+    measure = measure_avg(foo, display, r, step);
     max = std::max(max, measure);
     *set << measure;
   }
@@ -164,17 +165,16 @@ double MainWindow::compare_methods(QtCharts::QBarSet *set,
 
 inline double to_rads(double degree) { return degree * M_PI / 180; }
 
-int32_t MainWindow::compare_method_steps(int alg,
-                                         QtCharts::QLineSeries *series) {
+int32_t MainWindow::compare_method_steps(int alg, QtCharts::QLineSeries *series,
+                                         double r, int step) {
 
   auto arg =
       args{.command = DRAW_LINE_STEP_COUNT, .method = static_cast<algs>(alg)};
 
   auto center = point_t{ui->canvas->width() / 2.0, ui->canvas->height() / 2.0};
-  auto r = 10;
   int measure, max = 0;
 
-  for (int teta = 0; teta <= 90; teta++) {
+  for (int teta = 0; teta <= 90; teta += step) {
     auto line = line_t{.a = center,
                        .b = {center.x + r * cos(to_rads(teta)),
                              center.y + r * sin(to_rads(teta))}};
@@ -190,14 +190,20 @@ int32_t MainWindow::compare_method_steps(int alg,
 
 void MainWindow::on_compare_clicked() {
   auto *set0 = new QtCharts::QBarSet("Время без отрисовки");
-  auto max = compare_methods(set0, false);
+  auto r = ui->bunch_r->value();
+  auto step = ui->bunch_step->value();
+
+  auto max = compare_methods(set0, r, step, false);
 
   auto *series = new QtCharts::QBarSeries();
   series->append(set0);
 
   auto *chart = new QtCharts::QChart();
   chart->addSeries(series);
-  chart->setTitle("Сравнение алгоритмов");
+  chart->setTitle(QString("Сравнение времени работы алгоритмов<br>Длина "
+                          "отрезка: %1 Шаг поворота: %2")
+                      .arg(r)
+                      .arg(step));
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
   QStringList categories;
@@ -240,8 +246,13 @@ void MainWindow::on_compare_steps_clicked() {
     return ((n - a < b - n) ? a : b) + 10;
   };
 
+  auto r = ui->bunch_r->value();
+  auto step = ui->bunch_step->value();
   auto *chart = new QtCharts::QChart();
-  chart->setTitle("Сравнение ступенчатости алгоритмов");
+  chart->setTitle(QString("Сравнение ступенчатости алгоритмов<br>Длина "
+                          "отрезка: %1 Шаг поворота: %2")
+                      .arg(r)
+                      .arg(step));
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
   auto *axisX = new QtCharts::QValueAxis();
@@ -259,7 +270,7 @@ void MainWindow::on_compare_steps_clicked() {
   for (int i = DDA; i < STD; ++i) {
     auto *series = new QtCharts::QLineSeries();
 
-    max = std::max(max, compare_method_steps(i, series));
+    max = std::max(max, compare_method_steps(i, series, r, step));
     series->setName(alg_titles[i - DDA]);
 
     chart->addSeries(series);

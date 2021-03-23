@@ -6,10 +6,10 @@
 #define LAB_03_MAINWINDOW_H
 
 #include <QBarSet>
-#include <QLineSeries>
-#include <QSplineSeries>
 #include <QChart>
+#include <QLineSeries>
 #include <QMainWindow>
+#include <QSplineSeries>
 
 #include <drawer_mediator.h>
 
@@ -28,11 +28,13 @@ class MainWindow : public QMainWindow {
 
   QMainWindow *chartWindow{};
 
-  double measure_avg(int method, bool display);
+  double measure_avg(int method, bool display, double r, int32_t step);
 
-  double compare_methods(QtCharts::QBarSet *set, bool display);
+  double compare_methods(QtCharts::QBarSet *set, double r, int32_t step,
+                         bool display);
 
-  int32_t compare_method_steps(int alg, QtCharts::QLineSeries *series);
+  int32_t compare_method_steps(int alg, QtCharts::QLineSeries *series, double r,
+                               int step);
 
 protected:
   void on_method_selected();
