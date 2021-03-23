@@ -8,8 +8,6 @@
 #include <QGraphicsScene>
 #include <datatypes.h>
 
-enum { BLACK, WHITE };
-
 class drawer_mediator {
   QGraphicsScene *scene;
 
