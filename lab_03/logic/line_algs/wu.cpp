@@ -13,10 +13,10 @@ int32_t wu(const line_t &line, const color_t &color, drawer_mediator &drawer,
            bool display, bool steps) {
   auto a = line.a, b = line.b;
 
-  auto ipart = [](double x) -> int { return int(std::floor(x)); };
-  auto round = [](double x) -> double { return std::round(x); };
-  auto fpart = [](double x) -> double { return x - std::floor(x); };
+  auto fpart = [](double x) -> double { return x - int(x); };
+  auto ipart = [=](double x) -> double { return x - fpart(x); };
   auto rfpart = [=](double x) -> double { return 1 - fpart(x); };
+  auto round = [=](double x) -> double { return ipart(x + 0.5); };
 
   color_t color1, color2;
 
