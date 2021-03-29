@@ -205,13 +205,14 @@ void MainWindow::on_compare_clicked() {
   //    auto step = ui->bunch_step->value();
   auto r = 15;
   auto step = 10;
-  auto count = 1;
+  auto count = 10;
 
   auto *chart = new QtCharts::QChart();
-  chart->setTitle(QString("Сравнение времени работы алгоритмов<br>Длина "
-                          "отрезка: %1 Шаг поворота: %2")
+  chart->setTitle(QString("Сравнение времени работы алгоритмов<br>Радиус "
+                          "окружности: %1 Шаг: %2 Кол-во: %3")
                       .arg(r)
-                      .arg(step));
+                      .arg(step)
+                      .arg(count));
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
   auto *series = new QtCharts::QBarSeries();

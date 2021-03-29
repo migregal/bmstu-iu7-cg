@@ -85,7 +85,7 @@ public:
     canvas = new QGraphicsView(centralwidget);
     canvas->setObjectName(QString::fromUtf8("canvas"));
     QFont font;
-    font.setPointSize(9);
+    font.setPointSize(8);
     canvas->setFont(font);
 
     horizontalLayout->addWidget(canvas);

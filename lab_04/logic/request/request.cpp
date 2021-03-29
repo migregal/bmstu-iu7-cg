@@ -172,7 +172,7 @@ void request::measure_avg_circle_times(bool display) {
   using std::chrono::high_resolution_clock;
   using std::chrono::microseconds;
 
-  auto count = 100;
+  auto count = 5000;
 
   auto b = arg.get_m_c_bunch();
   auto c = b.get_circle();
