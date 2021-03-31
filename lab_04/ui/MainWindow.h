@@ -19,6 +19,8 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
+using line_vect = std::vector<QtCharts::QLineSeries *>;
+
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
@@ -30,7 +32,7 @@ class MainWindow : public QMainWindow {
 
   void check_ui();
 
-  double compare_circle_methods(QtCharts::QBarSet *set, int32_t r, int32_t step,
+  double compare_circle_methods(line_vect &series, int32_t r, int32_t step,
                                 int32_t count, bool display = false);
 
   double compare_ellipse_methods(QtCharts::QBarSet *set, int32_t ra, int32_t rb,

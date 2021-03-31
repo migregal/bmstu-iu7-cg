@@ -160,11 +160,11 @@ void MainWindow::on_draw_bunch_clicked() {
     request(*mediator, arg).execute({255, 255, 255});
 }
 
-double MainWindow::compare_circle_methods(QtCharts::QBarSet *set, int32_t r,
+double MainWindow::compare_circle_methods(line_vect &series, int32_t r,
                                           int32_t step, int32_t count,
                                           bool display) {
   auto max = 0.;
-  auto d = std::vector<double>();
+  auto d = std::vector<timed_vect>();
 
   circle_bunch_t bunch{.circle{{}, r}, .count = count, .step = step};
   auto arg = args{.command = MEASURE_CIRCLE_TIMES,
@@ -173,8 +173,12 @@ double MainWindow::compare_circle_methods(QtCharts::QBarSet *set, int32_t r,
   request{*mediator, arg}.execute({}, display);
 
   for (auto &i : d) {
-    *set << i;
-    max = std::max(max, i);
+    auto ser = new QtCharts::QLineSeries();
+    for (auto &j : i) {
+      ser->append(j.first, j.second);
+      max = std::max(max, j.second);
+    }
+    series.push_back(ser);
   }
 
   return max;
@@ -203,52 +207,42 @@ double MainWindow::compare_ellipse_methods(QtCharts::QBarSet *set, int32_t ra,
 void MainWindow::on_compare_clicked() {
   //    auto r = ui->bunch_r->value();
   //    auto step = ui->bunch_step->value();
-  auto r = 15;
+  auto r = 0;
   auto step = 10;
   auto count = 10;
 
   auto *chart = new QtCharts::QChart();
-  chart->setTitle(QString("Сравнение времени работы алгоритмов<br>Радиус "
-                          "окружности: %1 Шаг: %2 Кол-во: %3")
-                      .arg(r)
+  chart->setTitle(QString("Сравнение времени работы алгоритмов<br> Шаг: %1 "
+                          "Кол-во: %2")
                       .arg(step)
                       .arg(count));
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
-  auto *series = new QtCharts::QBarSeries();
-  chart->addSeries(series);
-
-  auto *set0 = new QtCharts::QBarSet("Время окружность");
-  auto max = compare_circle_methods(set0, r, step, count);
-  series->append(set0);
-
-  auto *set1 = new QtCharts::QBarSet("Время эллипс");
-  max = std::max(max, compare_ellipse_methods(set1, r, 2 * r, step, count));
-  series->append(set1);
-
-  QStringList categories;
-  for (auto &alg_title : alg_titles) {
-    categories << alg_title;
-  }
-
-  auto *axisX = new QtCharts::QBarCategoryAxis();
-  axisX->append(categories);
-  axisX->setTitleText("Метод");
+  auto *axisX = new QtCharts::QValueAxis();
+  axisX->setTitleText("Радиус окружности");
   chart->addAxis(axisX, Qt::AlignBottom);
-  series->attachAxis(axisX);
 
   auto *axisY = new QtCharts::QValueAxis();
-  axisY->setRange(0, 1.2 * max);
   axisY->setTitleText("Время, мкс");
   axisY->applyNiceNumbers();
   chart->addAxis(axisY, Qt::AlignLeft);
-  series->attachAxis(axisY);
 
   chart->legend()->setVisible(true);
   chart->legend()->setAlignment(Qt::AlignBottom);
 
   auto *chartView = new QtCharts::QChartView(chart);
   chartView->setRenderHint(QPainter::Antialiasing);
+
+  auto v = line_vect();
+  auto max = compare_circle_methods(v, r, step, count);
+
+  for (auto s = 0; s < v.size(); ++s) {
+    chart->addSeries(v.at(s));
+    v.at(s)->setName(alg_titles[s]);
+    v.at(s)->attachAxis(axisX);
+    v.at(s)->attachAxis(axisY);
+  }
+  axisY->setRange(0, 1.1 * max);
 
   chartWindow = new QMainWindow();
   chartWindow->setCentralWidget(chartView);

@@ -8,6 +8,8 @@
 #include <cstdint>
 #include <vector>
 
+using timed_vect = std::vector<std::pair<double, double>>;
+
 struct color_t {
   int r = 0, g = 0, b = 0;
   int alpha = 255;
@@ -46,7 +48,7 @@ struct ellipse_bunch_t {
 
 struct measure_circle_bunch_t {
   circle_bunch_t bunch;
-  std::vector<double> *time = nullptr;
+  std::vector<timed_vect> *time = nullptr;
 
   [[nodiscard]] inline circle_t get_circle() const { return bunch.circle; }
 

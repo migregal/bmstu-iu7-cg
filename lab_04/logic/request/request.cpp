@@ -172,7 +172,7 @@ void request::measure_avg_circle_times(bool display) {
   using std::chrono::high_resolution_clock;
   using std::chrono::microseconds;
 
-  auto count = 5000;
+  auto count = 10000;
 
   auto b = arg.get_m_c_bunch();
   auto c = b.get_circle();
@@ -182,28 +182,36 @@ void request::measure_avg_circle_times(bool display) {
 
   for (int i = CANONICAL; i < STD; ++i) {
     auto func = get_circle_alg(i);
-    auto res = 0.;
+    b.time->emplace_back();
 
-    for (int j = 0; j < count; ++j) {
-      for (int k = 0, step = 0; k < b.get_count(); ++k, step += b.get_step()) {
+    auto &cur_time = b.time->at(b.time->size() - 1);
+    for (int j = 0, step = 0; j <= b.get_count(); ++j, step += b.get_step()) {
+      auto res = 0.;
+
+      for (int k = 0; k < count; ++k) {
         auto data = std::vector<point_t>();
 
         start = high_resolution_clock::now();
         func(data, c.center, c.r + step, {});
+
         if (display)
           drawer.draw_points(data);
-        end = high_resolution_clock::now();
 
+        end = high_resolution_clock::now();
         res += duration_cast<microseconds>(end - start).count();
       }
-    }
 
-    b.time->emplace_back(res / count);
+      cur_time.emplace_back(c.r + step, res / count);
+    }
   }
 
-  auto res = 0.;
-  for (int j = 0; j < count; ++j) {
-    for (auto i = 0, step = 0; i < b.get_count(); ++i, step += b.get_step()) {
+  b.time->emplace_back();
+
+  auto &cur_time = b.time->at(b.time->size() - 1);
+  for (auto i = 0, step = 0; i <= b.get_count(); ++i, step += b.get_step()) {
+    auto res = 0.;
+
+    for (int j = 0; j < count; ++j) {
       start = high_resolution_clock::now();
       drawer.draw_circle(c.center, c.r + step, {});
       end = high_resolution_clock::now();
@@ -211,8 +219,9 @@ void request::measure_avg_circle_times(bool display) {
       drawer.clear();
       res += duration_cast<microseconds>(end - start).count();
     }
+
+    cur_time.emplace_back(c.r + step, res / count);
   }
-  b.time->emplace_back(res / count);
 
   drawer.clear();
 }
