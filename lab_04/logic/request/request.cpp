@@ -2,6 +2,7 @@
 // Created by gregory on 15.03.2021.
 //
 
+#include <omp.h>
 #include <chrono>
 
 #include <bresenham.h>
@@ -167,18 +168,16 @@ void request::draw_ellipse_brunch(const color_t &color, bool display) {
     drawer.draw_points(data);
 }
 
+#include <QDebug>
 void request::measure_avg_circle_times(bool display) {
   using std::chrono::duration_cast;
   using std::chrono::high_resolution_clock;
   using std::chrono::microseconds;
 
-  auto count = 10000;
+  auto count = 20000;
 
   auto b = arg.get_m_c_bunch();
   auto c = b.get_circle();
-
-  auto end = high_resolution_clock::now();
-  auto start = high_resolution_clock::now();
 
   for (int i = CANONICAL; i < STD; ++i) {
     auto func = get_circle_alg(i);
@@ -188,30 +187,36 @@ void request::measure_avg_circle_times(bool display) {
     for (int j = 0, step = 0; j <= b.get_count(); ++j, step += b.get_step()) {
       auto res = 0.;
 
+      #pragma omp parallel for
       for (int k = 0; k < count; ++k) {
         auto data = std::vector<point_t>();
-
-        start = high_resolution_clock::now();
+        auto t = omp_get_wtime();
         func(data, c.center, c.r + step, {});
 
         if (display)
           drawer.draw_points(data);
 
-        end = high_resolution_clock::now();
-        res += duration_cast<microseconds>(end - start).count();
+        t = omp_get_wtime() - t;
+        res += t;
       }
 
-      cur_time.emplace_back(c.r + step, res / count);
+      cur_time.emplace_back(c.r + step, res / count * 1e6);
     }
   }
 
+
   b.time->emplace_back();
+
+  auto end = high_resolution_clock::now();
+  auto start = high_resolution_clock::now();
+
+  auto lib_count = 100;
 
   auto &cur_time = b.time->at(b.time->size() - 1);
   for (auto i = 0, step = 0; i <= b.get_count(); ++i, step += b.get_step()) {
     auto res = 0.;
 
-    for (int j = 0; j < count; ++j) {
+    for (int j = 0; j < lib_count; ++j) {
       start = high_resolution_clock::now();
       drawer.draw_circle(c.center, c.r + step, {});
       end = high_resolution_clock::now();
@@ -220,7 +225,7 @@ void request::measure_avg_circle_times(bool display) {
       res += duration_cast<microseconds>(end - start).count();
     }
 
-    cur_time.emplace_back(c.r + step, res / count);
+    cur_time.emplace_back(c.r + step, res / lib_count);
   }
 
   drawer.clear();
