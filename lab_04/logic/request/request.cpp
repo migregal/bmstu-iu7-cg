@@ -168,7 +168,6 @@ void request::draw_ellipse_brunch(const color_t &color, bool display) {
     drawer.draw_points(data);
 }
 
-#include <QDebug>
 void request::measure_avg_circle_times(bool display) {
   using std::chrono::duration_cast;
   using std::chrono::high_resolution_clock;

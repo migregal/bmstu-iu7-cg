@@ -10,10 +10,10 @@ void mpcircle(std::vector<point_t> &dots, const point_t &c, double r,
               const color_t &color) {
   auto x = r, y = 0.;
 
-  tmirrored(dots, {x + c.x, y + c.y}, c, color);
   auto delta = 1 - r;
 
   while (x > y) {
+    tmirrored(dots, {x + c.x, y + c.y}, c, color);
     ++y;
 
     if (delta > 0) {
@@ -22,8 +22,6 @@ void mpcircle(std::vector<point_t> &dots, const point_t &c, double r,
     }
 
     delta += 2 * y + 3;
-
-    tmirrored(dots, {x + c.x, y + c.y}, c, color);
   }
 }
 
@@ -31,8 +29,10 @@ void mpellipse(std::vector<point_t> &dots, const point_t &c, double ra,
                double rb, const color_t &color) {
   auto x = 0., y = rb;
 
-  auto delta = rb * rb - ra * ra * rb + 0.25 * ra * ra;
-  auto dx = 2 * rb * rb * x, dy = 2 * ra * ra * y;
+  auto pa = ra * ra, pb = rb * rb;
+
+  auto delta = pb - pa * rb + 0.25 * pa;
+  auto dx = 2 * pb * x, dy = 2 * pa * y;
 
   while (dx < dy) {
     dmirrored(dots, {x + c.x, y + c.y}, c, color);
@@ -41,28 +41,27 @@ void mpellipse(std::vector<point_t> &dots, const point_t &c, double ra,
 
     if (delta >= 0) {
       --y;
-      dy -= 2 * ra * ra;
+      dy -= 2 * pa;
       delta -= dy;
     }
 
-    delta += dx + rb * rb;
+    delta += dx + pb;
   }
 
-  delta = rb * rb * (x + 0.5) * (x + 0.5) + ra * ra * (y - 1) * (y - 1) -
-          ra * ra * rb * rb;
+  delta = pb * (x + 0.5) * (x + 0.5) + pa * (y - 1) * (y - 1) - pa * pb;
 
   while (y >= 0) {
     dmirrored(dots, {x + c.x, y + c.y}, c, color);
 
     --y;
-    dy -= 2 * ra * ra;
+    dy -= 2 * pa;
 
     if (delta <= 0) {
       ++x;
-      dx += 2 * rb * rb;
+      dx += 2 * pb;
       delta += dx;
     }
 
-    delta -= dy - ra * ra;
+    delta -= dy - pa;
   }
 }
