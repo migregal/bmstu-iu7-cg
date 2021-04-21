@@ -36,34 +36,25 @@ MainWindow::MainWindow(QWidget *parent)
 
   mediator = new drawer_mediator(scene);
 
-  auto model = new QStringListModel(this);
+  ui->method_list->addItem("");
+  for (auto &alg_title : alg_titles)
+    ui->method_list->addItem(alg_title);
 
-  QStringList list = {""};
+  ui->figure_check->addItems({"", "Окружность", "Эллипс"});
 
-  for (auto &alg_title : alg_titles) {
-    list << alg_title;
-  }
+  ui->color_check->addItems({"", "Черный", "Цвет фона"});
 
-  model->setStringList(list);
+  ui->unused_list->addItems({"", "Rн", "Rк", "Шаг", "N окр."});
 
-  ui->method_list->setModel(model);
 
   connect(ui->method_list, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &MainWindow::on_method_selected);
-
-  QStringList distros = {"", "Окружность", "Эллипс"};
-
-  ui->figure_check->addItems(distros);
-
   connect(ui->figure_check, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &MainWindow::on_figure_selected);
-
-  QStringList colors = {"", "Черный", "Цвет фона"};
-
-  ui->color_check->addItems(colors);
-
   connect(ui->color_check, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &MainWindow::on_color_selected);
+  connect(ui->unused_list, QOverload<int>::of(&QComboBox::currentIndexChanged),
+          this, &MainWindow::on_unused_selected);
 
   connect(ui->coords_apply, &QPushButton::clicked, this,
           &MainWindow::on_draw_circle_clicked);
@@ -98,6 +89,12 @@ void MainWindow::check_ui() {
     return;
   }
 
+  if (ui->unused_list->currentIndex() == 0) {
+    ui->coords_apply->setEnabled(false);
+    ui->bunch_apply->setEnabled(false);
+    return;
+  }
+
   ui->coords_apply->setEnabled(true);
   ui->bunch_apply->setEnabled(true);
 }
@@ -111,7 +108,7 @@ void MainWindow::on_figure_selected(int idx) {
     return;
   }
 
-  if (2 == idx) {
+  if (2 == idx || 0 == idx) {
     ui->rb_spinbox->setEnabled(true);
     ui->bunch_r_b->setEnabled(true);
     return;
@@ -121,6 +118,8 @@ void MainWindow::on_figure_selected(int idx) {
 void MainWindow::on_method_selected(int idx) { check_ui(); }
 
 void MainWindow::on_color_selected(int idx) { check_ui(); }
+
+void MainWindow::on_unused_selected(int idx) { check_ui(); }
 
 void MainWindow::on_draw_circle_clicked() {
   auto method_n = ui->method_list->currentIndex() - 1;
@@ -276,6 +275,7 @@ void MainWindow::clear_screen() {
   ui->figure_check->setCurrentIndex(0);
   ui->color_check->setCurrentIndex(0);
   ui->method_list->setCurrentIndex(0);
+  ui->unused_list->setCurrentIndex(0);
 
   ui->rb_spinbox->setEnabled(true);
   ui->bunch_r_b->setEnabled(true);

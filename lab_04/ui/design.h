@@ -66,6 +66,8 @@ public:
   QSpinBox *bunch_r_a;
   QSpinBox *bunch_r_b;
   QPushButton *bunch_apply;
+  QLabel *unused_label;
+  QComboBox *unused_list;
   QLabel *bunch_label;
   QSpinBox *bunch_count;
   QPushButton *cmp_apply;
@@ -163,7 +165,6 @@ public:
     verticalLayout_2->addWidget(method_list);
 
     verticalLayout->addWidget(method_frame);
-
 
     coords_frame = new QFrame(frame);
     coords_frame->setObjectName(QString::fromUtf8("coords_frame"));
@@ -302,12 +303,22 @@ public:
 
     gridLayout_2->addWidget(bunch_count, 4, 2, 1, 1);
 
+    unused_label = new QLabel(bunch_params);
+    unused_label->setObjectName(QString::fromUtf8("unused_label"));
+
+    gridLayout_2->addWidget(unused_label, 5, 0, 1, 3);
+
+    unused_list = new QComboBox(bunch_params);
+    unused_list->setObjectName(QString::fromUtf8("unused_list"));
+
+    gridLayout_2->addWidget(unused_list, 6, 0, 1, 3);
+
     bunch_apply = new QPushButton(bunch_params);
     bunch_apply->setObjectName(QString::fromUtf8("bunch_apply"));
     bunch_apply->setEnabled(false);
     bunch_apply->setFont(font);
 
-    gridLayout_2->addWidget(bunch_apply, 5, 0, 1, 3);
+    gridLayout_2->addWidget(bunch_apply, 7, 0, 1, 3);
 
     bunch_label = new QLabel(bunch_params);
     bunch_label->setObjectName(QString::fromUtf8("bunch_label"));
@@ -393,6 +404,12 @@ public:
         "MainWindow",
         "\320\237\320\260\321\200\320\260\320\274\320\265\321\202\321\200\321"
         "\213 \321\201\320\277\320\265\320\272\321\202\321\200\320\260",
+        nullptr));
+    unused_label->setText(QCoreApplication::translate(
+        "MainWindow",
+        "\320\235\320\265 "
+        "\320\270\321\201\320\277\320\276\320\273\321\214\320\267\320\276\320"
+        "\262\320\260\321\202\321\214",
         nullptr));
     cmp_apply->setText(
         QCoreApplication::translate("MainWindow",

@@ -46,6 +46,8 @@ protected:
 
   void on_color_selected(int idx);
 
+  void on_unused_selected(int idx);
+
   void on_draw_circle_clicked();
 
   void on_draw_bunch_clicked();
