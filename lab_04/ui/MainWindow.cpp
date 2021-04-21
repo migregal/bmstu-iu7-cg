@@ -103,15 +103,23 @@ void MainWindow::on_figure_selected(int idx) {
   on_unused_selected(ui->unused_list->currentIndex());
 
   if (1 == idx) {
+    ui->unused_list->setEnabled(true);
     ui->rb_spinbox->setEnabled(false);
     ui->bunch_r_b->setEnabled(false);
+    ui->bunch_r_b_k->setEnabled(false);
+    ui->bunch_step_b->setEnabled(false);
     return;
   }
 
   if (2 == idx || 0 == idx) {
+    ui->unused_list->setEnabled(false);
+
     ui->rb_spinbox->setEnabled(true);
+    ui->bunch_r_a->setEnabled(true);
+    ui->bunch_r_a_k->setEnabled(false);
     ui->bunch_r_b->setEnabled(true);
-    ui->bunch_r_b_k->setEnabled(true);
+    ui->bunch_r_b_k->setEnabled(false);
+    ui->bunch_step_b->setEnabled(true);
     return;
   }
 }
@@ -131,7 +139,7 @@ void MainWindow::on_unused_selected(int idx) {
   ui->bunch_r_b_k->setEnabled(el);
 
   ui->bunch_step_a->setEnabled(true);
-  ui->bunch_step_b->setEnabled(true);
+  ui->bunch_step_b->setEnabled(false);
   ui->bunch_count->setEnabled(true);
 
   if (0 == idx)
@@ -151,7 +159,6 @@ void MainWindow::on_unused_selected(int idx) {
 
   if (3 == idx) {
     ui->bunch_step_a->setEnabled(false);
-    ui->bunch_step_b->setEnabled(false);
     return;
   }
 
