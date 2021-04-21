@@ -11,17 +11,15 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QFrame>
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
-#include <QtWidgets/QListView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -35,18 +33,18 @@ public:
   QGraphicsView *canvas;
   QFrame *frame;
   QVBoxLayout *verticalLayout;
-  QGroupBox *groupBox_2;
+  QFrame *figure_frame;
   QVBoxLayout *verticalLayout_6;
-  QRadioButton *circle_check;
-  QRadioButton *ellipse_check;
-  QGroupBox *groupBox;
+  QLabel *figure_title;
+  QComboBox *figure_check;
+  QFrame *color_frame;
   QVBoxLayout *verticalLayout_4;
-  QRadioButton *black_check;
-  QRadioButton *background_check;
+  QLabel *color_title;
+  QComboBox *color_check;
   QFrame *method_frame;
   QVBoxLayout *verticalLayout_2;
   QLabel *method_label;
-  QListView *method_list;
+  QComboBox *method_list;
   QFrame *coords_frame;
   QGridLayout *gridLayout;
   QSpinBox *ra_spinbox;
@@ -85,7 +83,7 @@ public:
     canvas = new QGraphicsView(centralwidget);
     canvas->setObjectName(QString::fromUtf8("canvas"));
     QFont font;
-    font.setPointSize(8);
+    font.setPointSize(9);
     canvas->setFont(font);
 
     horizontalLayout->addWidget(canvas);
@@ -102,48 +100,42 @@ public:
     frame->setFrameShadow(QFrame::Raised);
     verticalLayout = new QVBoxLayout(frame);
     verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-    groupBox_2 = new QGroupBox(frame);
-    groupBox_2->setObjectName(QString::fromUtf8("groupBox_2"));
-    groupBox_2->setFont(font);
-    verticalLayout_6 = new QVBoxLayout(groupBox_2);
+    figure_frame = new QFrame(frame);
+    figure_frame->setObjectName(QString::fromUtf8("figure_frame"));
+    figure_frame->setFont(font);
+    verticalLayout_6 = new QVBoxLayout(figure_frame);
     verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
-    circle_check = new QRadioButton(groupBox_2);
-    circle_check->setObjectName(QString::fromUtf8("circle_check"));
-    circle_check->setFont(font);
+    figure_title = new QLabel(figure_frame);
+    figure_title->setObjectName(QString::fromUtf8("figure_title"));
 
-    verticalLayout_6->addWidget(circle_check);
+    verticalLayout_6->addWidget(figure_title);
 
-    ellipse_check = new QRadioButton(groupBox_2);
-    ellipse_check->setObjectName(QString::fromUtf8("ellipse_check"));
-    ellipse_check->setFont(font);
+    figure_check = new QComboBox(figure_frame);
+    figure_check->setObjectName(QString::fromUtf8("figure_check"));
 
-    verticalLayout_6->addWidget(ellipse_check);
+    verticalLayout_6->addWidget(figure_check);
 
-    verticalLayout->addWidget(groupBox_2);
+    verticalLayout->addWidget(figure_frame);
 
-    groupBox = new QGroupBox(frame);
-    groupBox->setObjectName(QString::fromUtf8("groupBox"));
-    sizePolicy.setHeightForWidth(groupBox->sizePolicy().hasHeightForWidth());
-    groupBox->setSizePolicy(sizePolicy);
-    groupBox->setFont(font);
-    groupBox->setCheckable(false);
-    verticalLayout_4 = new QVBoxLayout(groupBox);
+    color_frame = new QFrame(frame);
+    color_frame->setObjectName(QString::fromUtf8("color_frame"));
+    sizePolicy.setHeightForWidth(color_frame->sizePolicy().hasHeightForWidth());
+    color_frame->setSizePolicy(sizePolicy);
+    color_frame->setFont(font);
+    color_frame->setFrameShape(QFrame::NoFrame);
+    verticalLayout_4 = new QVBoxLayout(color_frame);
     verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
-    black_check = new QRadioButton(groupBox);
-    black_check->setObjectName(QString::fromUtf8("black_check"));
-    black_check->setFont(font);
-    black_check->setCheckable(true);
-    black_check->setChecked(false);
+    color_title = new QLabel(color_frame);
+    color_title->setObjectName(QString::fromUtf8("color_title"));
 
-    verticalLayout_4->addWidget(black_check);
+    verticalLayout_4->addWidget(color_title);
 
-    background_check = new QRadioButton(groupBox);
-    background_check->setObjectName(QString::fromUtf8("background_check"));
-    background_check->setFont(font);
+    color_check = new QComboBox(color_frame);
+    color_check->setObjectName(QString::fromUtf8("color_check"));
 
-    verticalLayout_4->addWidget(background_check);
+    verticalLayout_4->addWidget(color_check);
 
-    verticalLayout->addWidget(groupBox);
+    verticalLayout->addWidget(color_frame);
 
     method_frame = new QFrame(frame);
     method_frame->setObjectName(QString::fromUtf8("method_frame"));
@@ -152,7 +144,7 @@ public:
     method_frame->setSizePolicy(sizePolicy);
     method_frame->setMinimumSize(QSize(0, 0));
     method_frame->setFont(font);
-    method_frame->setFrameShape(QFrame::StyledPanel);
+    method_frame->setFrameShape(QFrame::NoFrame);
     method_frame->setFrameShadow(QFrame::Raised);
     verticalLayout_2 = new QVBoxLayout(method_frame);
     verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
@@ -165,20 +157,13 @@ public:
 
     verticalLayout_2->addWidget(method_label);
 
-    method_list = new QListView(method_frame);
+    method_list = new QComboBox(method_frame);
     method_list->setObjectName(QString::fromUtf8("method_list"));
-    sizePolicy.setHeightForWidth(method_list->sizePolicy().hasHeightForWidth());
-    method_list->setSizePolicy(sizePolicy);
-    method_list->setMinimumSize(QSize(200, 74));
-    method_list->setFont(font);
-    method_list->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-    method_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    method_list->setSizeAdjustPolicy(
-        QAbstractScrollArea::AdjustToContentsOnFirstShow);
 
     verticalLayout_2->addWidget(method_list);
 
     verticalLayout->addWidget(method_frame);
+
 
     coords_frame = new QFrame(frame);
     coords_frame->setObjectName(QString::fromUtf8("coords_frame"));
@@ -186,52 +171,10 @@ public:
         coords_frame->sizePolicy().hasHeightForWidth());
     coords_frame->setSizePolicy(sizePolicy);
     coords_frame->setFont(font);
-    coords_frame->setFrameShape(QFrame::StyledPanel);
+    coords_frame->setFrameShape(QFrame::NoFrame);
     coords_frame->setFrameShadow(QFrame::Raised);
     gridLayout = new QGridLayout(coords_frame);
     gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-
-    xc_spinbox = new QSpinBox(coords_frame);
-    xc_spinbox->setObjectName(QString::fromUtf8("xc_spinbox"));
-    xc_spinbox->setFont(font);
-    xc_spinbox->setRange(0, 1000);
-
-    gridLayout->addWidget(xc_spinbox, 2, 1, 1, 1);
-
-    yc_spinbox = new QSpinBox(coords_frame);
-    yc_spinbox->setObjectName(QString::fromUtf8("yc_spinbox"));
-    yc_spinbox->setFont(font);
-    yc_spinbox->setRange(0, 1000);
-
-    gridLayout->addWidget(yc_spinbox, 2, 2, 1, 1);
-
-    ra_spinbox = new QSpinBox(coords_frame);
-    ra_spinbox->setObjectName(QString::fromUtf8("ra_spinbox"));
-    ra_spinbox->setFont(font);
-    ra_spinbox->setRange(0, 500);
-
-    gridLayout->addWidget(ra_spinbox, 3, 1, 1, 1);
-
-    rb_spinbox = new QSpinBox(coords_frame);
-    rb_spinbox->setObjectName(QString::fromUtf8("rb_spinbox"));
-    rb_spinbox->setFont(font);
-    rb_spinbox->setEnabled(false);
-    rb_spinbox->setRange(0, 500);
-
-    gridLayout->addWidget(rb_spinbox, 3, 2, 1, 1);
-
-    coords_apply = new QPushButton(coords_frame);
-    coords_apply->setObjectName(QString::fromUtf8("coords_apply"));
-    coords_apply->setEnabled(false);
-    coords_apply->setFont(font);
-
-    gridLayout->addWidget(coords_apply, 4, 0, 1, 3);
-
-    label_5 = new QLabel(coords_frame);
-    label_5->setObjectName(QString::fromUtf8("label_5"));
-    label_5->setFont(font);
-
-    gridLayout->addWidget(label_5, 3, 0, 1, 1);
 
     coords_label = new QLabel(coords_frame);
     coords_label->setObjectName(QString::fromUtf8("coords_label"));
@@ -241,6 +184,47 @@ public:
     coords_label->setFont(font);
 
     gridLayout->addWidget(coords_label, 0, 0, 1, 3);
+
+    xc_spinbox = new QSpinBox(coords_frame);
+    xc_spinbox->setObjectName(QString::fromUtf8("xc_spinbox"));
+    xc_spinbox->setFont(font);
+    xc_spinbox->setMaximum(1000);
+
+    gridLayout->addWidget(xc_spinbox, 2, 1, 1, 1);
+
+    yc_spinbox = new QSpinBox(coords_frame);
+    yc_spinbox->setObjectName(QString::fromUtf8("yc_spinbox"));
+    yc_spinbox->setFont(font);
+    yc_spinbox->setMaximum(1000);
+
+    gridLayout->addWidget(yc_spinbox, 2, 2, 1, 1);
+
+    label_5 = new QLabel(coords_frame);
+    label_5->setObjectName(QString::fromUtf8("label_5"));
+    label_5->setFont(font);
+
+    gridLayout->addWidget(label_5, 3, 0, 1, 1);
+
+    ra_spinbox = new QSpinBox(coords_frame);
+    ra_spinbox->setObjectName(QString::fromUtf8("ra_spinbox"));
+    ra_spinbox->setFont(font);
+    ra_spinbox->setMaximum(1000);
+
+    gridLayout->addWidget(ra_spinbox, 3, 1, 1, 1);
+
+    rb_spinbox = new QSpinBox(coords_frame);
+    rb_spinbox->setObjectName(QString::fromUtf8("rb_spinbox"));
+    rb_spinbox->setFont(font);
+    rb_spinbox->setMaximum(1000);
+
+    gridLayout->addWidget(rb_spinbox, 3, 2, 1, 1);
+
+    coords_apply = new QPushButton(coords_frame);
+    coords_apply->setObjectName(QString::fromUtf8("coords_apply"));
+    coords_apply->setEnabled(false);
+    coords_apply->setFont(font);
+
+    gridLayout->addWidget(coords_apply, 4, 0, 1, 3);
 
     label_4 = new QLabel(coords_frame);
     label_4->setObjectName(QString::fromUtf8("label_4"));
@@ -253,7 +237,7 @@ public:
     bunch_params = new QFrame(frame);
     bunch_params->setObjectName(QString::fromUtf8("bunch_params"));
     bunch_params->setFont(font);
-    bunch_params->setFrameShape(QFrame::StyledPanel);
+    bunch_params->setFrameShape(QFrame::NoFrame);
     bunch_params->setFrameShadow(QFrame::Raised);
     gridLayout_2 = new QGridLayout(bunch_params);
     gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
@@ -261,14 +245,12 @@ public:
     bunch_xc = new QSpinBox(bunch_params);
     bunch_xc->setObjectName(QString::fromUtf8("bunch_xc"));
     bunch_xc->setFont(font);
-    bunch_xc->setRange(0, 1000);
-
-    gridLayout_2->addWidget(bunch_xc, 2, 1, 1, 1);
+    bunch_xc->setMaximum(1000);
 
     bunch_yc = new QSpinBox(bunch_params);
     bunch_yc->setObjectName(QString::fromUtf8("bunch_yc"));
     bunch_yc->setFont(font);
-    bunch_yc->setRange(0, 1000);
+    bunch_yc->setMaximum(1000);
 
     gridLayout_2->addWidget(bunch_yc, 2, 2, 1, 1);
 
@@ -276,44 +258,49 @@ public:
     bunch_r_label->setObjectName(QString::fromUtf8("bunch_r_label"));
     bunch_r_label->setFont(font);
 
-    gridLayout_2->addWidget(bunch_r_label, 3, 0, 1, 1);
-
     bunch_r_a = new QSpinBox(bunch_params);
     bunch_r_a->setObjectName(QString::fromUtf8("bunch_r_a"));
     bunch_r_a->setFont(font);
+    bunch_r_a->setMaximum(1000);
 
     gridLayout_2->addWidget(bunch_r_a, 3, 1, 1, 1);
 
     bunch_r_b = new QSpinBox(bunch_params);
     bunch_r_b->setObjectName(QString::fromUtf8("bunch_r_b"));
     bunch_r_b->setFont(font);
-    bunch_r_b->setEnabled(false);
+    bunch_r_b->setMaximum(1000);
 
     gridLayout_2->addWidget(bunch_r_b, 3, 2, 1, 1);
 
     bunch_step_label = new QLabel(bunch_params);
-    bunch_step_label->setObjectName(QString::fromUtf8("bunch_setp_label"));
+    bunch_step_label->setObjectName(QString::fromUtf8("bunch_step_label"));
     bunch_step_label->setFont(font);
 
     gridLayout_2->addWidget(bunch_step_label, 4, 0, 1, 1);
 
+    gridLayout_2->addWidget(bunch_xc, 2, 1, 1, 1);
+
     bunch_step = new QSpinBox(bunch_params);
     bunch_step->setObjectName(QString::fromUtf8("bunch_step"));
     bunch_step->setFont(font);
+    bunch_step->setMaximum(1000);
 
     gridLayout_2->addWidget(bunch_step, 4, 1, 1, 1);
-
-    bunch_count = new QSpinBox(bunch_params);
-    bunch_count->setObjectName(QString::fromUtf8("bunch_count"));
-    bunch_count->setFont(font);
-
-    gridLayout_2->addWidget(bunch_count, 4, 2, 1, 1);
 
     bunch_coord_label = new QLabel(bunch_params);
     bunch_coord_label->setObjectName(QString::fromUtf8("bunch_coord_label"));
     bunch_coord_label->setFont(font);
 
     gridLayout_2->addWidget(bunch_coord_label, 2, 0, 1, 1);
+
+    gridLayout_2->addWidget(bunch_r_label, 3, 0, 1, 1);
+
+    bunch_count = new QSpinBox(bunch_params);
+    bunch_count->setObjectName(QString::fromUtf8("bunch_count"));
+    bunch_count->setFont(font);
+    bunch_count->setMaximum(1000);
+
+    gridLayout_2->addWidget(bunch_count, 4, 2, 1, 1);
 
     bunch_apply = new QPushButton(bunch_params);
     bunch_apply->setObjectName(QString::fromUtf8("bunch_apply"));
@@ -347,7 +334,7 @@ public:
     MainWindow->setCentralWidget(centralwidget);
     menubar = new QMenuBar(MainWindow);
     menubar->setObjectName(QString::fromUtf8("menubar"));
-    menubar->setGeometry(QRect(0, 0, 837, 23));
+    menubar->setGeometry(QRect(0, 0, 837, 21));
     MainWindow->setMenuBar(menubar);
 
     retranslateUi(MainWindow);
@@ -358,34 +345,19 @@ public:
   void retranslateUi(QMainWindow *MainWindow) {
     MainWindow->setWindowTitle(
         QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-    groupBox_2->setTitle(
+    figure_title->setText(
         QCoreApplication::translate("MainWindow",
                                     "\320\244\320\270\320\263\321\203\321\200"
                                     "\320\260 \320\264\320\273\321\217 "
                                     "\320\277\320\276\321\201\321\202\321\200"
                                     "\320\276\320\265\320\275\320\270\321\217",
                                     nullptr));
-    circle_check->setText(
-        QCoreApplication::translate("MainWindow",
-                                    "\320\236\320\272\321\200\321\203\320\266"
-                                    "\320\275\320\276\321\201\321\202\321\214",
-                                    nullptr));
-    ellipse_check->setText(QCoreApplication::translate(
-        "MainWindow", "\320\255\320\273\320\273\320\270\320\277\321\201",
-        nullptr));
-    groupBox->setTitle(
+    color_title->setText(
         QCoreApplication::translate("MainWindow",
                                     "\320\246\320\262\320\265\321\202 "
                                     "\320\277\320\276\321\201\321\202\321\200"
                                     "\320\276\320\265\320\275\320\270\321\217",
                                     nullptr));
-    black_check->setText(QCoreApplication::translate(
-        "MainWindow", "\320\247\320\265\321\200\320\275\321\213\320\271",
-        nullptr));
-    background_check->setText(QCoreApplication::translate(
-        "MainWindow",
-        "\320\246\320\262\320\265\321\202 \321\204\320\276\320\275\320\260",
-        nullptr));
     method_label->setText(
         QCoreApplication::translate("MainWindow",
                                     "\320\234\320\265\321\202\320\276\320\264 "

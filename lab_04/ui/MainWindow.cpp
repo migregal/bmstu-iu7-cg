@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   auto model = new QStringListModel(this);
 
-  QStringList list;
+  QStringList list = {""};
 
   for (auto &alg_title : alg_titles) {
     list << alg_title;
@@ -47,20 +47,23 @@ MainWindow::MainWindow(QWidget *parent)
   model->setStringList(list);
 
   ui->method_list->setModel(model);
-  ui->method_list->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-  connect(ui->method_list, &QListView::clicked, this,
-          &MainWindow::on_method_selected);
+  connect(ui->method_list, QOverload<int>::of(&QComboBox::currentIndexChanged),
+          this, &MainWindow::on_method_selected);
 
-  connect(ui->black_check, &QRadioButton::clicked, this,
-          &MainWindow::on_color_selected);
-  connect(ui->background_check, &QRadioButton::clicked, this,
-          &MainWindow::on_color_selected);
+  QStringList distros = {"", "Окружность", "Эллипс"};
 
-  connect(ui->circle_check, &QRadioButton::clicked, this,
-          &MainWindow::on_figure_selected);
-  connect(ui->ellipse_check, &QRadioButton::clicked, this,
-          &MainWindow::on_figure_selected);
+  ui->figure_check->addItems(distros);
+
+  connect(ui->figure_check, QOverload<int>::of(&QComboBox::currentIndexChanged),
+          this, &MainWindow::on_figure_selected);
+
+  QStringList colors = {"", "Черный", "Цвет фона"};
+
+  ui->color_check->addItems(colors);
+
+  connect(ui->color_check, QOverload<int>::of(&QComboBox::currentIndexChanged),
+          this, &MainWindow::on_color_selected);
 
   connect(ui->coords_apply, &QPushButton::clicked, this,
           &MainWindow::on_draw_circle_clicked);
@@ -77,65 +80,77 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::check_ui() {
-  if (!ui->black_check->isChecked() && !ui->background_check->isChecked())
+  if (ui->color_check->currentIndex() == 0) {
+    ui->coords_apply->setEnabled(false);
+    ui->bunch_apply->setEnabled(false);
     return;
+  }
 
-  if (ui->method_list->selectionModel()->selectedRows().isEmpty())
+  if (ui->method_list->currentIndex() == 0) {
+    ui->coords_apply->setEnabled(false);
+    ui->bunch_apply->setEnabled(false);
     return;
+  }
 
-  if (!ui->circle_check->isChecked() && !ui->ellipse_check->isChecked())
+  if (ui->figure_check->currentIndex() == 0) {
+    ui->coords_apply->setEnabled(false);
+    ui->bunch_apply->setEnabled(false);
     return;
+  }
 
   ui->coords_apply->setEnabled(true);
   ui->bunch_apply->setEnabled(true);
 }
 
-void MainWindow::on_figure_selected() {
+void MainWindow::on_figure_selected(int idx) {
   check_ui();
 
-  if (ui->circle_check->isChecked()) {
+  if (1 == idx) {
     ui->rb_spinbox->setEnabled(false);
     ui->bunch_r_b->setEnabled(false);
     return;
   }
 
-  if (ui->ellipse_check->isChecked()) {
+  if (2 == idx) {
     ui->rb_spinbox->setEnabled(true);
     ui->bunch_r_b->setEnabled(true);
+    return;
   }
 }
 
-void MainWindow::on_method_selected() { check_ui(); }
+void MainWindow::on_method_selected(int idx) { check_ui(); }
 
-void MainWindow::on_color_selected() { check_ui(); }
+void MainWindow::on_color_selected(int idx) { check_ui(); }
 
 void MainWindow::on_draw_circle_clicked() {
-  auto method_n = ui->method_list->selectionModel()->selectedIndexes()[0].row();
+  auto method_n = ui->method_list->currentIndex() - 1;
 
   auto arg = args{.method = CANONICAL + method_n};
 
-  if (ui->circle_check->isChecked()) {
+  if (ui->figure_check->currentIndex() == 1) {
     arg.command = DRAW_CIRCLE;
     arg.circle = {{ui->xc_spinbox->value(), ui->yc_spinbox->value()},
                   ui->ra_spinbox->value()};
-  } else {
+  }
+
+  if (ui->figure_check->currentIndex() == 2) {
     arg.command = DRAW_ELLIPSE;
     arg.ellipse = {{ui->xc_spinbox->value(), ui->yc_spinbox->value()},
                    ui->ra_spinbox->value(),
                    ui->rb_spinbox->value()};
   }
 
-  if (ui->black_check->isChecked())
+  if (ui->color_check->currentIndex() == 1)
     request(*mediator, arg).execute({0, 0, 0});
-  else
+  else if (ui->color_check->currentIndex() == 2)
     request(*mediator, arg).execute({255, 255, 255});
 }
 
 void MainWindow::on_draw_bunch_clicked() {
-  auto method_n = ui->method_list->selectionModel()->selectedIndexes()[0].row();
+  auto method_n = ui->method_list->currentIndex() - 1;
   auto arg = args{.method = CANONICAL + method_n};
 
-  if (ui->circle_check->isChecked()) {
+  if (ui->figure_check->currentIndex() == 1) {
     arg.command = DRAW_CIRCLE_BUNCH;
     arg.c_bunch =
         circle_bunch_t{.circle = {.center = {ui->canvas->width() / 2.0,
@@ -143,7 +158,9 @@ void MainWindow::on_draw_bunch_clicked() {
                                   .r = ui->bunch_r_a->value()},
                        .count = ui->bunch_count->value(),
                        .step = (int32_t)ui->bunch_step->value()};
-  } else {
+  }
+
+  if (ui->figure_check->currentIndex() == 2) {
     arg.command = DRAW_ELLIPSE_BUNCH;
     arg.e_bunch =
         ellipse_bunch_t{.ellipse = {.center = {ui->canvas->width() / 2.0,
@@ -154,9 +171,9 @@ void MainWindow::on_draw_bunch_clicked() {
                         .step = ui->bunch_step->value()};
   }
 
-  if (ui->black_check->isChecked())
+  if (ui->color_check->currentIndex() == 1)
     request(*mediator, arg).execute({0, 0, 0});
-  else
+  else if (ui->color_check->currentIndex() == 2)
     request(*mediator, arg).execute({255, 255, 255});
 }
 
@@ -256,23 +273,9 @@ void MainWindow::on_compare_clicked() {
 void MainWindow::clear_screen() {
   request(*mediator, {.command = CLEAR_SCREEN}).execute({});
 
-  ui->method_list->selectionModel()->clear();
-
-  ui->black_check->setAutoExclusive(false);
-  ui->black_check->setChecked(false);
-  ui->black_check->setAutoExclusive(true);
-
-  ui->background_check->setAutoExclusive(false);
-  ui->background_check->setChecked(false);
-  ui->background_check->setAutoExclusive(true);
-
-  ui->circle_check->setAutoExclusive(false);
-  ui->circle_check->setChecked(false);
-  ui->circle_check->setAutoExclusive(true);
-
-  ui->ellipse_check->setAutoExclusive(false);
-  ui->ellipse_check->setChecked(false);
-  ui->ellipse_check->setAutoExclusive(true);
+  ui->figure_check->setCurrentIndex(0);
+  ui->color_check->setCurrentIndex(0);
+  ui->method_list->setCurrentIndex(0);
 
   ui->rb_spinbox->setEnabled(true);
   ui->bunch_r_b->setEnabled(true);

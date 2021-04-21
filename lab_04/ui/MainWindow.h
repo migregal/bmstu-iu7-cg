@@ -40,11 +40,11 @@ class MainWindow : public QMainWindow {
                                  bool display = false);
 
 protected:
-  void on_figure_selected();
+  void on_figure_selected(int idx);
 
-  void on_method_selected();
+  void on_method_selected(int idx);
 
-  void on_color_selected();
+  void on_color_selected(int idx);
 
   void on_draw_circle_clicked();
 
