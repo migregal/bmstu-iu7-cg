@@ -88,11 +88,12 @@ void MainWindow::check_ui() {
     return;
   }
 
-  if (ui->unused_list->currentIndex() == 0) {
-    ui->coords_apply->setEnabled(false);
-    ui->bunch_apply->setEnabled(false);
-    return;
-  }
+  if (ui->figure_check->currentIndex() != 2)
+    if (ui->unused_list->currentIndex() == 0) {
+      ui->coords_apply->setEnabled(false);
+      ui->bunch_apply->setEnabled(false);
+      return;
+    }
 
   ui->coords_apply->setEnabled(true);
   ui->bunch_apply->setEnabled(true);
@@ -232,7 +233,8 @@ void MainWindow::on_draw_bunch_clicked() {
                     .ra = ui->bunch_r_a->value(),
                     .rb = ui->bunch_r_b->value()},
         .count = ui->bunch_count->value(),
-        .step = ui->bunch_step_a->value()};
+        .step_a = ui->bunch_step_a->value(),
+        .step_b = ui->bunch_step_b->value()};
   }
 
   if (ui->color_check->currentIndex() == 1)
@@ -271,7 +273,7 @@ double MainWindow::compare_ellipse_methods(QtCharts::QBarSet *set, int32_t ra,
   auto max = 0.;
   auto d = std::vector<double>();
 
-  ellipse_bunch_t bunch{.ellipse{{}, ra, rb}, .count = count, .step = step};
+  ellipse_bunch_t bunch{.ellipse{{}, ra, rb}, .count = count, .step_a = step};
   auto arg = args{.command = MEASURE_ELLIPSE_TIMES,
                   .m_e_bunch = {.bunch = bunch, .time = &d}};
 

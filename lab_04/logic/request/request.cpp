@@ -2,8 +2,8 @@
 // Created by gregory on 15.03.2021.
 //
 
-#include <omp.h>
 #include <chrono>
+#include <omp.h>
 
 #include <bresenham.h>
 #include <canonical.h>
@@ -148,9 +148,22 @@ void request::draw_ellipse_brunch(const color_t &color, bool display) {
   auto b = arg.get_e_bunch();
   auto e = b.ellipse;
 
+  double ra = e.ra, rb = e.rb;
+  auto koef = b.step_a ? rb / ra : ra / rb;
+
   if (STD == arg.method) {
-    for (auto i = 0, step = 0; i < b.count; ++i, step += b.step)
-      drawer.draw_ellipse(e.center, e.ra + step, e.rb + step, color);
+    for (auto i = 0; i < b.count; ++i) {
+      drawer.draw_ellipse(e.center, ra, rb, color);
+
+      if (b.step_a) {
+        ra += b.step_a;
+        rb = ra * koef;
+      } else {
+        rb += b.step_b;
+        ra = rb * koef;
+      }
+    }
+
     return;
   }
 
@@ -161,8 +174,17 @@ void request::draw_ellipse_brunch(const color_t &color, bool display) {
 
   std::vector<point_t> data;
 
-  for (auto i = 0, step = 0; i < b.count; ++i, step += b.step)
-    func(data, e.center, e.ra + step, e.rb + step, color);
+  for (auto i = 0; i < b.count; ++i) {
+    func(data, e.center, ra, rb, color);
+
+    if (b.step_a) {
+      ra += b.step_a;
+      rb = ra * koef;
+    } else {
+      rb += b.step_b;
+      ra = rb * koef;
+    }
+  }
 
   if (display)
     drawer.draw_points(data);
@@ -202,7 +224,6 @@ void request::measure_avg_circle_times(bool display) {
       cur_time.emplace_back(c.r + step, res / count * 1e6);
     }
   }
-
 
   b.time->emplace_back();
 
@@ -248,7 +269,8 @@ void request::measure_avg_ellipse_times(bool display) {
     auto res = 0.;
 
     for (int j = 0; j < count; ++j) {
-      for (int k = 0, step = 0; k < b.get_count(); ++k, step += b.get_step()) {
+      for (int k = 0, step = 0; k < b.get_count();
+           ++k, step += b.get_step_a()) {
         auto data = std::vector<point_t>();
 
         start = high_resolution_clock::now();
@@ -266,7 +288,7 @@ void request::measure_avg_ellipse_times(bool display) {
 
   auto res = 0.;
   for (int j = 0; j < count; ++j) {
-    for (auto i = 0, step = 0; i < b.get_count(); ++i, step += b.get_step()) {
+    for (auto i = 0, step = 0; i < b.get_count(); ++i, step += b.get_step_a()) {
       start = high_resolution_clock::now();
       drawer.draw_ellipse(e.center, e.ra + step, e.rb + step, {});
       end = high_resolution_clock::now();

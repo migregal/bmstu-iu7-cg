@@ -43,7 +43,8 @@ struct ellipse_t {
 struct ellipse_bunch_t {
   ellipse_t ellipse{};
   int32_t count = 1;
-  int32_t step = 1;
+  int32_t step_a = 1;
+  int32_t step_b = 1;
 };
 
 struct measure_circle_bunch_t {
@@ -63,7 +64,9 @@ struct measure_ellipse_bunch_t {
 
   [[nodiscard]] inline ellipse_t get_ellipse() const { return bunch.ellipse; }
 
-  [[nodiscard]] inline int32_t get_step() const { return bunch.step; }
+  [[nodiscard]] inline int32_t get_step_a() const { return bunch.step_a; }
+
+  [[nodiscard]] inline int32_t get_step_b() const { return bunch.step_a; }
 
   [[nodiscard]] inline int32_t get_count() const { return bunch.count; }
 };
