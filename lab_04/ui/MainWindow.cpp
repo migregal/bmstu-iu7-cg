@@ -191,11 +191,31 @@ void MainWindow::on_draw_bunch_clicked() {
 
   if (ui->figure_check->currentIndex() == 1) {
     arg.command = DRAW_CIRCLE_BUNCH;
+
+    auto r = ui->bunch_r_a->value(), count = ui->bunch_count->value(),
+         step = ui->bunch_step_a->value();
+
+    switch (ui->unused_list->currentIndex()) {
+    case 1:
+      r = std::max(0, ui->bunch_r_a_k->value() - step * count);
+      break;
+    case 2:
+      break;
+    case 3:
+      step = (ui->bunch_r_a_k->value() - r) / count;
+      break;
+    case 4:
+      count = (ui->bunch_r_a_k->value() - r) / step;
+      break;
+    default:
+      break;
+    }
+
     arg.c_bunch = circle_bunch_t{
         .circle = {.center = {ui->bunch_xc->value(), ui->bunch_yc->value()},
-                   .r = ui->bunch_r_a->value()},
-        .count = ui->bunch_count->value(),
-        .step = (int32_t)ui->bunch_step_a->value()};
+                   .r = r},
+        .count = count,
+        .step = step};
   }
 
   if (ui->figure_check->currentIndex() == 2) {
