@@ -60,16 +60,21 @@ public:
   QSpinBox *bunch_yc;
   QLabel *bunch_step_label;
   QSpinBox *bunch_xc;
-  QSpinBox *bunch_step;
+  QSpinBox *bunch_step_a;
+  QSpinBox *bunch_step_b;
   QLabel *bunch_coord_label;
-  QLabel *bunch_r_label;
+  QLabel *bunch_ra_label;
+  QLabel *bunch_rb_label;
   QSpinBox *bunch_r_a;
+  QSpinBox *bunch_r_a_k;
   QSpinBox *bunch_r_b;
+  QSpinBox *bunch_r_b_k;
   QPushButton *bunch_apply;
   QLabel *unused_label;
   QComboBox *unused_list;
   QLabel *bunch_label;
   QSpinBox *bunch_count;
+  QLabel *bunch_count_label;
   QPushButton *cmp_apply;
   QPushButton *clear_screen_apply;
   QMenuBar *menubar;
@@ -248,6 +253,8 @@ public:
     bunch_xc->setFont(font);
     bunch_xc->setMaximum(1000);
 
+    gridLayout_2->addWidget(bunch_xc, 2, 1, 1, 1);
+
     bunch_yc = new QSpinBox(bunch_params);
     bunch_yc->setObjectName(QString::fromUtf8("bunch_yc"));
     bunch_yc->setFont(font);
@@ -255,9 +262,11 @@ public:
 
     gridLayout_2->addWidget(bunch_yc, 2, 2, 1, 1);
 
-    bunch_r_label = new QLabel(bunch_params);
-    bunch_r_label->setObjectName(QString::fromUtf8("bunch_r_label"));
-    bunch_r_label->setFont(font);
+    bunch_ra_label = new QLabel(bunch_params);
+    bunch_ra_label->setObjectName(QString::fromUtf8("bunch_ra_label"));
+    bunch_ra_label->setFont(font);
+
+    gridLayout_2->addWidget(bunch_ra_label, 3, 0, 1, 1);
 
     bunch_r_a = new QSpinBox(bunch_params);
     bunch_r_a->setObjectName(QString::fromUtf8("bunch_r_a"));
@@ -266,27 +275,52 @@ public:
 
     gridLayout_2->addWidget(bunch_r_a, 3, 1, 1, 1);
 
+    bunch_r_a_k = new QSpinBox(bunch_params);
+    bunch_r_a_k->setObjectName(QString::fromUtf8("bunch_r_a_k"));
+    bunch_r_a_k->setFont(font);
+    bunch_r_a_k->setMaximum(1000);
+
+    gridLayout_2->addWidget(bunch_r_a_k, 3, 2, 1, 1);
+
+    bunch_rb_label = new QLabel(bunch_params);
+    bunch_rb_label->setObjectName(QString::fromUtf8("bunch_ra_label"));
+    bunch_rb_label->setFont(font);
+
+    gridLayout_2->addWidget(bunch_rb_label, 4, 0, 1, 1);
+
     bunch_r_b = new QSpinBox(bunch_params);
     bunch_r_b->setObjectName(QString::fromUtf8("bunch_r_b"));
     bunch_r_b->setFont(font);
     bunch_r_b->setMaximum(1000);
 
-    gridLayout_2->addWidget(bunch_r_b, 3, 2, 1, 1);
+    gridLayout_2->addWidget(bunch_r_b, 4, 1, 1, 1);
+
+    bunch_r_b_k = new QSpinBox(bunch_params);
+    bunch_r_b_k->setObjectName(QString::fromUtf8("bunch_r_b_k"));
+    bunch_r_b_k->setFont(font);
+    bunch_r_b_k->setMaximum(1000);
+
+    gridLayout_2->addWidget(bunch_r_b_k, 4, 2, 1, 1);
 
     bunch_step_label = new QLabel(bunch_params);
     bunch_step_label->setObjectName(QString::fromUtf8("bunch_step_label"));
     bunch_step_label->setFont(font);
 
-    gridLayout_2->addWidget(bunch_step_label, 4, 0, 1, 1);
+    gridLayout_2->addWidget(bunch_step_label, 5, 0, 1, 1);
 
-    gridLayout_2->addWidget(bunch_xc, 2, 1, 1, 1);
+    bunch_step_a = new QSpinBox(bunch_params);
+    bunch_step_a->setObjectName(QString::fromUtf8("bunch_step"));
+    bunch_step_a->setFont(font);
+    bunch_step_a->setMaximum(1000);
 
-    bunch_step = new QSpinBox(bunch_params);
-    bunch_step->setObjectName(QString::fromUtf8("bunch_step"));
-    bunch_step->setFont(font);
-    bunch_step->setMaximum(1000);
+    gridLayout_2->addWidget(bunch_step_a, 5, 1, 1, 1);
 
-    gridLayout_2->addWidget(bunch_step, 4, 1, 1, 1);
+    bunch_step_b = new QSpinBox(bunch_params);
+    bunch_step_b->setObjectName(QString::fromUtf8("bunch_step"));
+    bunch_step_b->setFont(font);
+    bunch_step_b->setMaximum(1000);
+
+    gridLayout_2->addWidget(bunch_step_b, 5, 2, 1, 1);
 
     bunch_coord_label = new QLabel(bunch_params);
     bunch_coord_label->setObjectName(QString::fromUtf8("bunch_coord_label"));
@@ -294,31 +328,35 @@ public:
 
     gridLayout_2->addWidget(bunch_coord_label, 2, 0, 1, 1);
 
-    gridLayout_2->addWidget(bunch_r_label, 3, 0, 1, 1);
+    bunch_count_label = new QLabel(bunch_params);
+    bunch_count_label->setObjectName(QString::fromUtf8("bunch_step_label"));
+    bunch_count_label->setFont(font);
+
+    gridLayout_2->addWidget(bunch_count_label, 6, 0, 1, 1);
 
     bunch_count = new QSpinBox(bunch_params);
     bunch_count->setObjectName(QString::fromUtf8("bunch_count"));
     bunch_count->setFont(font);
     bunch_count->setMaximum(1000);
 
-    gridLayout_2->addWidget(bunch_count, 4, 2, 1, 1);
+    gridLayout_2->addWidget(bunch_count, 6, 1, 1, 2);
 
     unused_label = new QLabel(bunch_params);
     unused_label->setObjectName(QString::fromUtf8("unused_label"));
 
-    gridLayout_2->addWidget(unused_label, 5, 0, 1, 3);
+    gridLayout_2->addWidget(unused_label, 7, 0, 1, 2);
 
     unused_list = new QComboBox(bunch_params);
     unused_list->setObjectName(QString::fromUtf8("unused_list"));
 
-    gridLayout_2->addWidget(unused_list, 6, 0, 1, 3);
+    gridLayout_2->addWidget(unused_list, 7, 2, 1, 1);
 
     bunch_apply = new QPushButton(bunch_params);
     bunch_apply->setObjectName(QString::fromUtf8("bunch_apply"));
     bunch_apply->setEnabled(false);
     bunch_apply->setFont(font);
 
-    gridLayout_2->addWidget(bunch_apply, 7, 0, 1, 3);
+    gridLayout_2->addWidget(bunch_apply, 8, 0, 1, 3);
 
     bunch_label = new QLabel(bunch_params);
     bunch_label->setObjectName(QString::fromUtf8("bunch_label"));
@@ -390,11 +428,15 @@ public:
     label_4->setText(QCoreApplication::translate(
         "MainWindow", "(\321\205\321\201, \321\203\321\201)", nullptr));
     bunch_step_label->setText(QCoreApplication::translate(
-        "MainWindow", "\320\250\320\260\320\263, N", nullptr));
+        "MainWindow", "\320\250\320\260\320\263 A, B", nullptr));
+    bunch_count_label->setText(QCoreApplication::translate(
+        "MainWindow", "N", nullptr));
     bunch_coord_label->setText(QCoreApplication::translate(
         "MainWindow", "(\321\205\321\201, \321\203\321\201)", nullptr));
-    bunch_r_label->setText(
-        QCoreApplication::translate("MainWindow", "Ra, Rb", nullptr));
+    bunch_ra_label->setText(QCoreApplication::translate(
+        "MainWindow", "Ra\320\275, Ra\320\272", nullptr));
+    bunch_rb_label->setText(QCoreApplication::translate(
+        "MainWindow", "Rb\320\275, Rb\320\272", nullptr));
     bunch_apply->setText(QCoreApplication::translate(
         "MainWindow",
         "\320\237\320\276\321\201\321\202\321\200\320\276\320\270\321\202\321"

@@ -44,8 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   ui->color_check->addItems({"", "Черный", "Цвет фона"});
 
-  ui->unused_list->addItems({"", "Rн", "Rк", "Шаг", "N окр."});
-
+  ui->unused_list->addItems({"", "Rн", "Rк", "Шаг", "N"});
 
   connect(ui->method_list, QOverload<int>::of(&QComboBox::currentIndexChanged),
           this, &MainWindow::on_method_selected);
@@ -101,6 +100,7 @@ void MainWindow::check_ui() {
 
 void MainWindow::on_figure_selected(int idx) {
   check_ui();
+  on_unused_selected(ui->unused_list->currentIndex());
 
   if (1 == idx) {
     ui->rb_spinbox->setEnabled(false);
@@ -111,6 +111,7 @@ void MainWindow::on_figure_selected(int idx) {
   if (2 == idx || 0 == idx) {
     ui->rb_spinbox->setEnabled(true);
     ui->bunch_r_b->setEnabled(true);
+    ui->bunch_r_b_k->setEnabled(true);
     return;
   }
 }
@@ -119,7 +120,46 @@ void MainWindow::on_method_selected(int idx) { check_ui(); }
 
 void MainWindow::on_color_selected(int idx) { check_ui(); }
 
-void MainWindow::on_unused_selected(int idx) { check_ui(); }
+void MainWindow::on_unused_selected(int idx) {
+  check_ui();
+
+  ui->bunch_r_a->setEnabled(true);
+  ui->bunch_r_a_k->setEnabled(true);
+
+  auto el = (ui->figure_check->currentIndex() == 2);
+  ui->bunch_r_b->setEnabled(el);
+  ui->bunch_r_b_k->setEnabled(el);
+
+  ui->bunch_step_a->setEnabled(true);
+  ui->bunch_step_b->setEnabled(true);
+  ui->bunch_count->setEnabled(true);
+
+  if (0 == idx)
+    return;
+
+  if (1 == idx) {
+    ui->bunch_r_a->setEnabled(false);
+    ui->bunch_r_b->setEnabled(false);
+    return;
+  }
+
+  if (2 == idx) {
+    ui->bunch_r_a_k->setEnabled(false);
+    ui->bunch_r_b_k->setEnabled(false);
+    return;
+  }
+
+  if (3 == idx) {
+    ui->bunch_step_a->setEnabled(false);
+    ui->bunch_step_b->setEnabled(false);
+    return;
+  }
+
+  if (4 == idx) {
+    ui->bunch_count->setEnabled(false);
+    return;
+  }
+}
 
 void MainWindow::on_draw_circle_clicked() {
   auto method_n = ui->method_list->currentIndex() - 1;
@@ -151,23 +191,21 @@ void MainWindow::on_draw_bunch_clicked() {
 
   if (ui->figure_check->currentIndex() == 1) {
     arg.command = DRAW_CIRCLE_BUNCH;
-    arg.c_bunch =
-        circle_bunch_t{.circle = {.center = {ui->canvas->width() / 2.0,
-                                             ui->canvas->height() / 2.0},
-                                  .r = ui->bunch_r_a->value()},
-                       .count = ui->bunch_count->value(),
-                       .step = (int32_t)ui->bunch_step->value()};
+    arg.c_bunch = circle_bunch_t{
+        .circle = {.center = {ui->bunch_xc->value(), ui->bunch_yc->value()},
+                   .r = ui->bunch_r_a->value()},
+        .count = ui->bunch_count->value(),
+        .step = (int32_t)ui->bunch_step_a->value()};
   }
 
   if (ui->figure_check->currentIndex() == 2) {
     arg.command = DRAW_ELLIPSE_BUNCH;
-    arg.e_bunch =
-        ellipse_bunch_t{.ellipse = {.center = {ui->canvas->width() / 2.0,
-                                               ui->canvas->height() / 2.0},
-                                    .ra = ui->bunch_r_a->value(),
-                                    .rb = ui->bunch_r_b->value()},
-                        .count = ui->bunch_count->value(),
-                        .step = ui->bunch_step->value()};
+    arg.e_bunch = ellipse_bunch_t{
+        .ellipse = {.center = {ui->bunch_xc->value(), ui->bunch_yc->value()},
+                    .ra = ui->bunch_r_a->value(),
+                    .rb = ui->bunch_r_b->value()},
+        .count = ui->bunch_count->value(),
+        .step = ui->bunch_step_a->value()};
   }
 
   if (ui->color_check->currentIndex() == 1)
