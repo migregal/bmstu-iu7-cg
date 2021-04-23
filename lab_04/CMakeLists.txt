@@ -35,8 +35,14 @@ add_executable(
         ${LOGIC_DOMAIN}/circle_algs/canonical.h
         ${LOGIC_DOMAIN}/circle_algs/canonical.cpp
         ${LOGIC_DOMAIN}/circle_algs/utils.h
-        ${LOGIC_DOMAIN}/circle_algs/utils.cpp logic/circle_algs/parametric.h logic/circle_algs/parametric.cpp logic/circle_algs/bresenham.h logic/circle_algs/bresenham.cpp logic/circle_algs/midpoint.h logic/circle_algs/midpoint.cpp)
-
+        ${LOGIC_DOMAIN}/circle_algs/utils.cpp
+        ${LOGIC_DOMAIN}/circle_algs/parametric.h
+        ${LOGIC_DOMAIN}/circle_algs/parametric.cpp
+        ${LOGIC_DOMAIN}/circle_algs/bresenham.h
+        ${LOGIC_DOMAIN}/circle_algs/bresenham.cpp
+        ${LOGIC_DOMAIN}/circle_algs/midpoint.h
+        ${LOGIC_DOMAIN}/circle_algs/midpoint.cpp)
+        
 if (NOT CMAKE_PREFIX_PATH)
     message(WARNING "CMAKE_PREFIX_PATH is not defined, you may need to set it "
             "(-DCMAKE_PREFIX_PATH=\"path/to/Qt/lib/cmake\" or -DCMAKE_PREFIX_PATH=/usr/include/{host}/qt{version}/ on Ubuntu)")
