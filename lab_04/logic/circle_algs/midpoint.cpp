@@ -18,10 +18,10 @@ void mpcircle(std::vector<point_t> &dots, const point_t &c, double r,
 
     if (delta > 0) {
       --x;
-      delta -= 2 * x - 2;
+      delta -= 2 * x + 1;
     }
 
-    delta += 2 * y + 3;
+    delta += 2 * y + 1;
   }
 }
 

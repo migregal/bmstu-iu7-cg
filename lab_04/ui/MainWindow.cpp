@@ -88,14 +88,14 @@ void MainWindow::check_ui() {
     return;
   }
 
-  if (ui->figure_check->currentIndex() != 2)
-    if (ui->unused_list->currentIndex() == 0) {
-      ui->coords_apply->setEnabled(false);
-      ui->bunch_apply->setEnabled(false);
-      return;
-    }
-
   ui->coords_apply->setEnabled(true);
+
+  if (ui->figure_check->currentIndex() != 2 &&
+      ui->unused_list->currentIndex() == 0) {
+    ui->bunch_apply->setEnabled(false);
+    return;
+  }
+
   ui->bunch_apply->setEnabled(true);
 }
 

@@ -26,14 +26,16 @@ void canellipse(std::vector<point_t> &dots, const point_t &c, double ra,
   auto limit = int(c.x + ra / std::sqrt(1 + rb_p / ra_p));
 
   for (int32_t x = c.x; x <= limit; ++x) {
-    int32_t y = sqrt(ra_p * rb_p - (x - c.x) * (x - c.x) * rb_p) / ra + c.y;
+    int32_t y =
+        round(sqrt(ra_p * rb_p - (x - c.x) * (x - c.x) * rb_p) / ra + c.y);
     dmirrored(dots, {x, y}, c, color);
   }
 
   limit = int(c.y + rb / sqrt(1 + ra_p / rb_p));
 
   for (int32_t y = limit; y >= c.y; --y) {
-    int32_t x = sqrt(ra_p * rb_p - (y - c.y) * (y - c.y) * ra_p) / rb + c.x;
+    int32_t x =
+        round(sqrt(ra_p * rb_p - (y - c.y) * (y - c.y) * ra_p) / rb + c.x);
     dmirrored(dots, {x, y}, c, color);
   }
 }
