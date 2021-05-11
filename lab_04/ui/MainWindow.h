@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow {
   double compare_circle_methods(line_vect &series, int32_t r, int32_t step,
                                 int32_t count, bool display = false);
 
-  double compare_ellipse_methods(QtCharts::QBarSet *set, int32_t ra, int32_t rb,
+  double compare_ellipse_methods(line_vect &set, int32_t ra, int32_t rb,
                                  int32_t step, int32_t count,
                                  bool display = false);
 

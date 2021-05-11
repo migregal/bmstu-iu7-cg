@@ -65,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(ui->clear_screen_apply, &QPushButton::clicked, this,
           &MainWindow::clear_screen);
+
+  ui->cmp_apply->setEnabled(false);
 }
 
 MainWindow::~MainWindow() { delete ui; }
@@ -85,6 +87,7 @@ void MainWindow::check_ui() {
   if (ui->figure_check->currentIndex() == 0) {
     ui->coords_apply->setEnabled(false);
     ui->bunch_apply->setEnabled(false);
+    ui->cmp_apply->setEnabled(false);
     return;
   }
 
@@ -103,17 +106,24 @@ void MainWindow::on_figure_selected(int idx) {
   check_ui();
   on_unused_selected(ui->unused_list->currentIndex());
 
+  ui->cmp_apply->setEnabled(false);
   if (1 == idx) {
     ui->unused_list->setEnabled(true);
     ui->rb_spinbox->setEnabled(false);
     ui->bunch_r_b->setEnabled(false);
     ui->bunch_r_b_k->setEnabled(false);
     ui->bunch_step_b->setEnabled(false);
+
+    ui->cmp_apply->setEnabled(true);
+
     return;
   }
 
+  if (2 == idx)
+    ui->cmp_apply->setEnabled(true);
+
   if (2 == idx || 0 == idx) {
-    ui->unused_list->setEnabled(false);
+    ui->unused_list->setEnabled(true);
 
     ui->rb_spinbox->setEnabled(true);
     ui->bunch_r_a->setEnabled(true);
@@ -267,11 +277,11 @@ double MainWindow::compare_circle_methods(line_vect &series, int32_t r,
   return max;
 }
 
-double MainWindow::compare_ellipse_methods(QtCharts::QBarSet *set, int32_t ra,
+double MainWindow::compare_ellipse_methods(line_vect &series, int32_t ra,
                                            int32_t rb, int32_t step,
                                            int32_t count, bool display) {
   auto max = 0.;
-  auto d = std::vector<double>();
+  auto d = std::vector<timed_vect>();
 
   ellipse_bunch_t bunch{.ellipse{{}, ra, rb}, .count = count, .step_a = step};
   auto arg = args{.command = MEASURE_ELLIPSE_TIMES,
@@ -280,8 +290,12 @@ double MainWindow::compare_ellipse_methods(QtCharts::QBarSet *set, int32_t ra,
   request{*mediator, arg}.execute({}, display);
 
   for (auto &i : d) {
-    *set << i;
-    max = std::max(max, i);
+    auto ser = new QtCharts::QLineSeries();
+    for (auto &j : i) {
+      ser->append(j.first, j.second);
+      max = std::max(max, j.second);
+    }
+    series.push_back(ser);
   }
 
   return max;
@@ -292,7 +306,7 @@ void MainWindow::on_compare_clicked() {
   //    auto step = ui->bunch_step->value();
   auto r = 0;
   auto step = 10;
-  auto count = 10;
+  auto count = 100;
 
   auto *chart = new QtCharts::QChart();
   chart->setTitle(QString("Сравнение времени работы алгоритмов<br> Шаг: %1 "
@@ -302,7 +316,12 @@ void MainWindow::on_compare_clicked() {
   chart->setAnimationOptions(QtCharts::QChart::SeriesAnimations);
 
   auto *axisX = new QtCharts::QValueAxis();
-  axisX->setTitleText("Радиус окружности");
+
+  if (1 == ui->figure_check->currentIndex())
+    axisX->setTitleText("Радиус окружности");
+  else if (2 == ui->figure_check->currentIndex())
+    axisX->setTitleText("Полуось a");
+
   chart->addAxis(axisX, Qt::AlignBottom);
 
   auto *axisY = new QtCharts::QValueAxis();
@@ -317,7 +336,12 @@ void MainWindow::on_compare_clicked() {
   chartView->setRenderHint(QPainter::Antialiasing);
 
   auto v = line_vect();
-  auto max = compare_circle_methods(v, r, step, count);
+
+  auto max = 0.;
+  if (1 == ui->figure_check->currentIndex())
+    max = compare_circle_methods(v, r, step, count);
+  else if (2 == ui->figure_check->currentIndex())
+    max = compare_ellipse_methods(v, r, r, step, count);
 
   for (auto s = 0; s < v.size(); ++s) {
     chart->addSeries(v.at(s));

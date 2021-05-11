@@ -195,7 +195,7 @@ void request::measure_avg_circle_times(bool display) {
   using std::chrono::high_resolution_clock;
   using std::chrono::microseconds;
 
-  auto count = 20000;
+  auto count = 500;
 
   auto b = arg.get_m_c_bunch();
   auto c = b.get_circle();
@@ -208,7 +208,6 @@ void request::measure_avg_circle_times(bool display) {
     for (int j = 0, step = 0; j <= b.get_count(); ++j, step += b.get_step()) {
       auto res = 0.;
 
-      #pragma omp parallel for
       for (int k = 0; k < count; ++k) {
         auto data = std::vector<point_t>();
         auto t = omp_get_wtime();
@@ -256,48 +255,57 @@ void request::measure_avg_ellipse_times(bool display) {
   using std::chrono::high_resolution_clock;
   using std::chrono::microseconds;
 
-  auto count = 100;
+  auto count = 1000;
 
   auto b = arg.get_m_e_bunch();
-  auto e = b.get_ellipse();
+  auto c = b.get_ellipse();
+
+  for (int i = CANONICAL; i < STD; ++i) {
+    auto func = get_ellipse_alg(i);
+    b.time->emplace_back();
+
+    auto &cur_time = b.time->at(b.time->size() - 1);
+    for (int j = 0, step = 0; j <= b.get_count(); ++j, step += b.get_step_a()) {
+      auto res = 0.;
+
+      for (int k = 0; k < count; ++k) {
+        auto data = std::vector<point_t>();
+        auto t = omp_get_wtime();
+        func(data, c.center, c.ra + step, c.rb + step, {});
+
+        if (display)
+          drawer.draw_points(data);
+
+        t = omp_get_wtime() - t;
+        res += t;
+      }
+
+      cur_time.emplace_back(c.ra + step, res / count * 1e6);
+    }
+  }
+
+  b.time->emplace_back();
 
   auto end = high_resolution_clock::now();
   auto start = high_resolution_clock::now();
 
-  for (int i = CANONICAL; i < STD; ++i) {
-    auto func = get_ellipse_alg(i);
+  auto lib_count = 100;
+
+  auto &cur_time = b.time->at(b.time->size() - 1);
+  for (auto i = 0, step = 0; i <= b.get_count(); ++i, step += b.get_step_a()) {
     auto res = 0.;
 
-    for (int j = 0; j < count; ++j) {
-      for (int k = 0, step = 0; k < b.get_count();
-           ++k, step += b.get_step_a()) {
-        auto data = std::vector<point_t>();
-
-        start = high_resolution_clock::now();
-        func(data, e.center, e.ra + step, e.rb + step, {});
-        if (display)
-          drawer.draw_points(data);
-        end = high_resolution_clock::now();
-
-        res += duration_cast<microseconds>(end - start).count();
-      }
-    }
-
-    b.time->push_back(res / count);
-  }
-
-  auto res = 0.;
-  for (int j = 0; j < count; ++j) {
-    for (auto i = 0, step = 0; i < b.get_count(); ++i, step += b.get_step_a()) {
+    for (int j = 0; j < lib_count; ++j) {
       start = high_resolution_clock::now();
-      drawer.draw_ellipse(e.center, e.ra + step, e.rb + step, {});
+      drawer.draw_ellipse(c.center, c.ra + step, c.rb + step, {});
       end = high_resolution_clock::now();
 
       drawer.clear();
       res += duration_cast<microseconds>(end - start).count();
     }
+
+    cur_time.emplace_back(c.ra + step, res / lib_count);
   }
-  b.time->push_back(res / count);
 
   drawer.clear();
 }

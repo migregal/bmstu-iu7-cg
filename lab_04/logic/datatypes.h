@@ -60,7 +60,7 @@ struct measure_circle_bunch_t {
 
 struct measure_ellipse_bunch_t {
   ellipse_bunch_t bunch;
-  std::vector<double> *time = nullptr;
+  std::vector<timed_vect>  *time = nullptr;
 
   [[nodiscard]] inline ellipse_t get_ellipse() const { return bunch.ellipse; }
 
