@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, uic
-from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QSizePolicy, QColorDialog
+from PyQt5.QtWidgets import QTableWidgetItem, QHeaderView, QSizePolicy, QColorDialog, QMessageBox
 from PyQt5.QtGui import QPen, QColor, QColorConstants, QImage, QPixmap, QPainter
 from PyQt5.QtCore import Qt, QTime, QCoreApplication, QEventLoop, QPoint
 from time import perf_counter
@@ -14,6 +14,7 @@ class Window(QtWidgets.QMainWindow):
         uic.loadUi("window.ui", self)
 
         self.edges = []
+        self.edges_count = 0
         self.point_now = None
         self.point_lock = None
 
@@ -70,6 +71,8 @@ class Window(QtWidgets.QMainWindow):
 
     def add_point(self, point):
         global w
+
+        self.edges_count += 1
         if self.point_now is None:
             self.point_now = point
             self.point_lock = point
@@ -97,6 +100,19 @@ class Window(QtWidgets.QMainWindow):
                 item_x.text()), float(item_y.text()), self.pen)
 
     def __lock(self):
+        if (self.edges_count < 3):
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+
+            msg.setWindowTitle("Внимание")
+            msg.setText("Слишком мало точек. Нельзя замкнуть фигуру")
+
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            msg.exec_()
+            return
+
+        self.edges_count = 0
         self.edges.append([self.point_now.x(), self.point_now.y(),
                            self.point_lock.x(), self.point_lock.y()])
         self.scene.addLine(self.point_now.x(), self.point_now.y(),
@@ -148,6 +164,19 @@ class Window(QtWidgets.QMainWindow):
         return x_max
 
     def __fill_xor(self):
+
+        if (self.edges_count != 0):
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+
+            msg.setWindowTitle("Внимание")
+            msg.setText("Похоже, вы не замкнули какую-то фигуру")
+
+            msg.setStandardButtons(QMessageBox.Ok)
+
+            msg.exec_()
+            return
+
         pix = QPixmap()
         p = QPainter()
 
