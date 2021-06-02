@@ -103,7 +103,10 @@ class Window(QMainWindow):
     def cut(self):
         if self.cutter:
             for i in self.colored_lines:
-                self.scene.removeItem(i)
+                try:
+                    self.scene.removeItem(i)
+                except BaseException:
+                    pass
 
             for line in self.lines:
                 visible, p1, p2 = simple_cut(self.cutter.rect,

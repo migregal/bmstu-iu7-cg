@@ -5,10 +5,6 @@ from PyQt5.QtCore import QPoint, QLine
 from funcs import Rect
 
 
-def count_S(T):
-    return sum(T)
-
-
 def count_pl(t1, t2):
     p = 0
 
@@ -19,27 +15,35 @@ def count_pl(t1, t2):
 
 
 def count_T(p: QPoint, r: Rect):
-    return [
-        1 if p.x() < r.left() else 0,
-        1 if p.x() > r.right() else 0,
-        1 if p.y() < r.bottom() else 0,
-        1 if p.y() > r.top() else 0
-    ]
+    t = 0
+
+    if p.x() < r.left():
+        t |= 1 << 3
+
+    if p.x() > r.right():
+        t |= 1 << 2
+
+    if p.y() < r.bottom():
+        t |= 1 << 1
+
+    if p.y() > r.top():
+        t |= 1
+
+    return t
 
 
 def simple_cut(cutter: Rect, line: QLine):
     t1, t2 = count_T(line.p1(), cutter), count_T(line.p2(), cutter)
-    s1, s2 = count_S(t1), count_S(t2)
 
     flag = 1
 
     r1, r2 = copy.deepcopy(line.p1()), copy.deepcopy(line.p2())
 
     # отрезок полностью видимый
-    if (s1 == 0) and (s2 == 0):
+    if t1 | t2 == 0:
         return step_31(flag, r1, r2)
 
-    pl = count_pl(t1, t2)
+    pl = t1 & t2
 
     # отрезок лежит по одну из сторон окна (невидимый)- тривиальная невидимость
     if pl != 0:
@@ -47,13 +51,13 @@ def simple_cut(cutter: Rect, line: QLine):
         return step_31(flag)
 
     # отрезок частично видимый
-    if s1 == 0:
+    if t1 == 0:
         r1 = copy.deepcopy(line.p1())
         q = copy.deepcopy(line.p2())
         i = 2
         return step_15(flag, i, q, line, r1, r2, cutter)
 
-    if s2 == 0:
+    if t2 == 0:
         r1 = copy.deepcopy(line.p2())
         q = copy.deepcopy(line.p1())
         i = 2
