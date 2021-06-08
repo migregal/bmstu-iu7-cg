@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>661</width>
+    <height>478</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QFrame" name="frame">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="4" column="0">
+        <widget class="QPushButton" name="clear_screen">
+         <property name="text">
+          <string>Очистить экран</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Отсекатель</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="2" column="0" colspan="2">
+            <widget class="QPushButton" name="close_cutter">
+             <property name="text">
+              <string>Замкнуть</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="cutter_x">
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2" colspan="2">
+            <widget class="QPushButton" name="add_cutter_vertice">
+             <property name="text">
+              <string>Добавить</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Y</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QSpinBox" name="cutter_y">
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>X</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="4">
+            <widget class="QPushButton" name="cutter_color">
+             <property name="styleSheet">
+              <string notr="true">background-color:lightgreen</string>
+             </property>
+             <property name="text">
+              <string>Цвет отсекателя</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="4">
+            <widget class="QTableWidget" name="table_cutter">
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <attribute name="horizontalHeaderVisible">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderCascadingSectionResizes">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+              <bool>false</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>X</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Y</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="4">
+            <widget class="QPushButton" name="cut_line_color">
+             <property name="styleSheet">
+              <string notr="true">background-color:red</string>
+             </property>
+             <property name="text">
+              <string>Цвет отсечения</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Отрезки</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Xн</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Yн</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="line_x_1">
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QSpinBox" name="line_x_2">
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QSpinBox" name="line_y_1">
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Yк</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Xк</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="4">
+            <widget class="QTableWidget" name="table_line">
+             <property name="horizontalScrollBarPolicy">
+              <enum>Qt::ScrollBarAlwaysOff</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::AdjustIgnored</enum>
+             </property>
+             <attribute name="horizontalHeaderMinimumSectionSize">
+              <number>57</number>
+             </attribute>
+             <attribute name="horizontalHeaderDefaultSectionSize">
+              <number>100</number>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>1</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>2</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item row="2" column="3">
+            <widget class="QSpinBox" name="line_y_2">
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" colspan="4">
+            <widget class="QPushButton" name="add_line">
+             <property name="text">
+              <string>Добавить</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="4">
+            <widget class="QPushButton" name="line_color">
+             <property name="styleSheet">
+              <string notr="true">background-color:blue</string>
+             </property>
+             <property name="text">
+              <string>Цвет отрезка</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Отрисовка</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QRadioButton" name="draw_line">
+            <property name="text">
+             <string>Отрезки</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="draw_cutter">
+            <property name="text">
+             <string>Отсекатель</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="cut_lines">
+         <property name="text">
+          <string>Отсечь</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>table_cutter</tabstop>
+  <tabstop>cutter_x</tabstop>
+  <tabstop>cutter_y</tabstop>
+  <tabstop>close_cutter</tabstop>
+  <tabstop>add_cutter_vertice</tabstop>
+  <tabstop>cut_line_color</tabstop>
+  <tabstop>cutter_color</tabstop>
+  <tabstop>table_line</tabstop>
+  <tabstop>line_x_1</tabstop>
+  <tabstop>line_y_1</tabstop>
+  <tabstop>line_x_2</tabstop>
+  <tabstop>line_y_2</tabstop>
+  <tabstop>line_color</tabstop>
+  <tabstop>add_line</tabstop>
+  <tabstop>draw_line</tabstop>
+  <tabstop>draw_cutter</tabstop>
+  <tabstop>cut_lines</tabstop>
+  <tabstop>clear_screen</tabstop>
+  <tabstop>graphicsView</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
